@@ -1,7 +1,7 @@
 import json
 import ssl
 from pymongo import MongoClient
-import pyodbc
+import pymssql
 
 class Driver:
     
@@ -20,27 +20,12 @@ class Driver:
         return client[settings['MONGO_database']]
         
         
-    def get_mssql(sql):
-        
+    def get_mssql():
+
         settings = Driver.load_settings()
-        
-        server = 'roodee.database.windows.net'
-        database = 'roodee-demo'
-        username = 'produser@roodee'
-        password = '~Proding0001'
-        driver= '{ODBC Driver 13 for SQL Server}'
-        conn = pyodbc.connect('DRIVER='+driver+';PORT=1433;SERVER='+server+';PORT=1443;DATABASE='+database+';UID='+username+';PWD='+ password)
+        server = settings['MSSQL_Server']
+        username = settings['MSSQL_User']
+        password = settings['MSSQL_Pass']
+        dbname = settings['MSSQL_DBName']
 
-
-
-        #connectionstring = settings['MSSQL_connectionstring']
-        #conn = pyodbc.connect('DRIVER={SQL Server};SERVER=roodee.database.windows.net,1433', user='produser@roodee', password='~Proding0001', database='roodee-demo')
-        #conn.autocommit = True
-        
-        crsr = conn.cursor()
-        crsr.execute(sql)
-        rows = crsr.fetchall()
-        while rows:
-            print(rows)
-        
-        conn.close
+        return pymssql.connect(server=server, user=username, password=password, database=dbname)
