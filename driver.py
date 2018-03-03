@@ -2,6 +2,7 @@ import json
 import ssl
 from pymongo import MongoClient
 import pymssql
+import pandas as pd
 
 class Driver:
     
@@ -19,8 +20,8 @@ class Driver:
         client = MongoClient(settings['MONGO_connectionstring'], ssl_cert_reqs=ssl.CERT_NONE)
         return client[settings['MONGO_database']]
         
-        
-    def get_mssql():
+    @staticmethod
+    def get_mssql(sql):
 
         settings = Driver.load_settings()
         server = settings['MSSQL_Server']
@@ -28,4 +29,9 @@ class Driver:
         password = settings['MSSQL_Pass']
         dbname = settings['MSSQL_DBName']
 
-        return pymssql.connect(server=server, user=username, password=password, database=dbname)
+        conn = pymssql.connect(server=server, user=username, password=password, database=dbname)
+         
+        try:
+            return pd.read_sql(sql, conn)
+        finally:
+            conn.close()

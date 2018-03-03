@@ -1,0 +1,11 @@
+1. install to create virtial env. Make sure you are in workspace folder
+
+    cd /home/ubuntu/workspace
+    
+    virtualenv --python=/usr/bin/python3.5 ./venv
+    
+2. run this command to initiate
+
+    source /home/ubuntu/workspace/venv/bin/activate
+    
+    ** note: I put this in .bashrc. so you may not need to run this everytime.
