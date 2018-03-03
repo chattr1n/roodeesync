@@ -1,3 +1,21 @@
+======================> Test URL
+
+the test url is at https://roodee-dev-chattr1n.c9users.io/
+
+this is from c9.io instance with name 'roodee-dev'
+
+in this instance, to run meteor, just execute run.sh (./run.sh). only do this if it's not currently running
+
+the database connection string can be found in the settings.json in this instance
+
+
+
+
+
+
+
+======================> Virtual Env
+
 1. install to create virtial env. Make sure you are in workspace folder
 
     cd /home/ubuntu/workspace
