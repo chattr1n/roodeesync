@@ -35,3 +35,25 @@ class Driver:
             return pd.read_sql(sql, conn)
         finally:
             conn.close()
+            
+    @staticmethod
+    def upsert_mssql(proc, param):
+
+        settings = Driver.load_settings()
+        server = settings['MSSQL_Server']
+        username = settings['MSSQL_User']
+        password = settings['MSSQL_Pass']
+        dbname = settings['MSSQL_DBName']
+
+        conn = pymssql.connect(server=server, user=username, password=password, database=dbname)
+        cursor = conn.cursor(as_dict=True)
+        
+        with pymssql.connect(server, username, password, dbname) as conn:
+            with conn.cursor(as_dict=True) as cursor:
+                cursor.callproc(proc, param)
+                conn.commit()
+
+    @staticmethod
+    def delete_mssql(proc, param):
+        
+        Driver.upsert_mssql(proc, param)
