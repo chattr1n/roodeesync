@@ -30,11 +30,30 @@ class Departments:
     @staticmethod
     def diff(df1, df2):
         key_column = 'ID'
-        
-        insert_df = df1[~df1[key_column].isin(df2[key_column])].copy()
-        update_df = df1[df1[key_column].isin(df2[key_column])].copy()        
 
+        # insert and delete
+        insert_df = df1[~df1[key_column].isin(df2[key_column])].copy()
         delete_df = df2[~df2[key_column].isin(df1[key_column])].copy()
+
+        # update
+        d1 = df1[df1[key_column].isin(df2[key_column])].copy()
+        d1.set_index(['ID'], inplace=True)
+        d1.sort_index(inplace=True)
+
+        d2 = df2[df2[key_column].isin(df1[key_column])].copy()
+        d2.set_index(['ID'], inplace=True)
+        d2.sort_index(inplace=True)
+
+        update_df = pd.DataFrame(data=None, columns=d1.columns, index=d1.index)
+
+        # d1 will have the same row count as d2
+        if len(d1) > 0:
+            update_df = d1[~(
+                (d1['Name'] == d2['Name'])
+                & (d1['NameTH'] == d2['NameTH'])
+            )]
+
+        update_df.reset_index(inplace=True)
 
         return [insert_df, update_df, delete_df]
     
@@ -68,3 +87,5 @@ class Departments:
         Departments.upsert(insert_df)
         Departments.upsert(update_df)
         Departments.delete(delete_df)
+
+        return [len(insert_df), len(update_df), len(delete_df)]
