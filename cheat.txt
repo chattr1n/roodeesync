@@ -27,3 +27,7 @@ the database connection string can be found in the settings.json in this instanc
     source /home/ubuntu/workspace/venv/bin/activate
     
     ** note: I put this in .bashrc. so you may not need to run this everytime.
+    
+    
+    ** if pymssql fails to install, maybe try sudo apt-get install freetds-dev
+    and sudo apt-get install python3.6-dev 
