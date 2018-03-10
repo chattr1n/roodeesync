@@ -61,13 +61,16 @@ class Generations:
     
     @staticmethod
     def upsert(upsert_df):
-        
+
+        params  =[]
         for index, row in upsert_df.iterrows():
             ID = row['ID']
             Name = row['Name']
             NameTH = row['NameTH']
+
+            params.append((ID, Name, NameTH))
             
-            Driver.upsert_mssql('spGenerationsUpsert', (ID, Name, NameTH))
+        Driver.upsert_mssql('spGenerationsUpsert', params)
         
     
     @staticmethod

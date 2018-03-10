@@ -63,14 +63,17 @@ class GradeCat:
     
     @staticmethod
     def upsert(upsert_df):
-        
+
+        params = []
         for index, row in upsert_df.iterrows():
             ID = row['ID']
             Name = row['Name']
             NameTH = row['NameTH']
             Color = row['Color']
+
+            params.append((ID, Name, NameTH, Color))
             
-            Driver.upsert_mssql('spGradeCatUpsert', (ID, Name, NameTH, Color))
+        Driver.upsert_mssql('spGradeCatUpsert', params)
         
     
     @staticmethod

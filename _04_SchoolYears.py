@@ -65,15 +65,18 @@ class SchoolYears:
     
     @staticmethod
     def upsert(upsert_df):
-        
+
+        params = []
         for index, row in upsert_df.iterrows():
             ID = row['ID']
             Name = row['Name']
             NameTH = row['NameTH']
             BeginDate = row['BeginDate'].to_pydatetime()
             EndDate = row['EndDate'].to_pydatetime()
+
+            params.append((ID, Name, NameTH, BeginDate, EndDate))
                         
-            Driver.upsert_mssql('spSchoolYearsUpsert', (ID, Name, NameTH, BeginDate, EndDate))
+        Driver.upsert_mssql('spSchoolYearsUpsert', params)
         
     
     @staticmethod
