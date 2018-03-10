@@ -63,7 +63,6 @@ class TaskListCat:
     
     @staticmethod
     def upsert(upsert_df):
-
         params = []
         for index, row in upsert_df.iterrows():
             ID = row['ID']
@@ -73,16 +72,17 @@ class TaskListCat:
 
             params.append((ID, Name, NameTH, Color))
 
-        Driver.upsert_mssql('spTaskListCatUpsert', params)
+        Driver.upsert_or_delete_mssql('spTaskListCatUpsert', params)
         
     
     @staticmethod
     def delete(delete_df):
-        
+        params = []
         for index, row in delete_df.iterrows():
             ID = row['ID']
+            params.append((ID,))
                         
-            Driver.delete_mssql('spTaskListCatDelete', (ID,))
+        Driver.upsert_or_delete_mssql('spTaskListCatDelete', params)
     
     @staticmethod
     def run():

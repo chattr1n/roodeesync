@@ -37,7 +37,7 @@ class Driver:
             conn.close()
             
     @staticmethod
-    def upsert_mssql(proc, params):
+    def upsert_or_delete_mssql(proc, params):
         settings = Driver.load_settings()
         server = settings['MSSQL_Server']
         username = settings['MSSQL_User']
@@ -52,6 +52,3 @@ class Driver:
                         conn.commit()
                 conn.commit()
 
-    @staticmethod
-    def delete_mssql(proc, param):
-        Driver.upsert_mssql(proc, [param])

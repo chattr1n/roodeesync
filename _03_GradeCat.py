@@ -73,16 +73,18 @@ class GradeCat:
 
             params.append((ID, Name, NameTH, Color))
             
-        Driver.upsert_mssql('spGradeCatUpsert', params)
+        Driver.upsert_or_delete_mssql('spGradeCatUpsert', params)
         
     
     @staticmethod
     def delete(delete_df):
-        
+
+        params = []
         for index, row in delete_df.iterrows():
             ID = row['ID']
-                        
-            Driver.delete_mssql('spGradeCatDelete', (ID,))
+            params.append((ID,))
+
+        Driver.upsert_or_delete_mssql('spGradeCatDelete', params)
     
     @staticmethod
     def run():

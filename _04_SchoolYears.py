@@ -76,16 +76,18 @@ class SchoolYears:
 
             params.append((ID, Name, NameTH, BeginDate, EndDate))
                         
-        Driver.upsert_mssql('spSchoolYearsUpsert', params)
+        Driver.upsert_or_delete_mssql('spSchoolYearsUpsert', params)
         
     
     @staticmethod
     def delete(delete_df):
-        
+
+        params = []
         for index, row in delete_df.iterrows():
             ID = row['ID']
-                        
-            Driver.delete_mssql('spSchoolYearsDelete', (ID,))
+            params.append((ID,))
+
+        Driver.upsert_or_delete_mssql('spSchoolYearsDelete', params)
     
     @staticmethod
     def run():

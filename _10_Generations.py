@@ -70,16 +70,18 @@ class Generations:
 
             params.append((ID, Name, NameTH))
             
-        Driver.upsert_mssql('spGenerationsUpsert', params)
+        Driver.upsert_or_delete_mssql('spGenerationsUpsert', params)
         
     
     @staticmethod
     def delete(delete_df):
-        
+
+        params = []
         for index, row in delete_df.iterrows():
             ID = row['ID']
-                        
-            Driver.delete_mssql('spGenerationsDelete', (ID,))
+            params.append((ID,))
+
+        Driver.upsert_or_delete_mssql('spGenerationsDelete', params)
     
     @staticmethod
     def run():

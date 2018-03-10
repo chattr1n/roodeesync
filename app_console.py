@@ -1,5 +1,6 @@
 import math
 from _01_TaskListCat import *
+from _02_PeriodList import *
 from _03_GradeCat import *
 from _04_SchoolYears import *
 from _06_Subjects import *
@@ -14,6 +15,13 @@ output = TaskListCat.run()
 dt2 = datetime.now()
 sec = math.ceil((dt2 - dt1).total_seconds())
 print('--------------> TaskListCat: ' + str(sec) + ' sec. ' + str(output))
+
+# _02_PeriodList
+dt1 = datetime.now()
+output = PeriodList.run()
+dt2 = datetime.now()
+sec = math.ceil((dt2 - dt1).total_seconds())
+print('--------------> PeriodList: ' + str(sec) + ' sec. ' + str(output))
 
 # _03_GradeCat
 dt1 = datetime.now()
