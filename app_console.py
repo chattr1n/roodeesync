@@ -5,6 +5,7 @@ from _03_GradeCat import *
 from _04_SchoolYears import *
 from _06_Subjects import *
 from _07_Classes import *
+from _08_Teachers import *
 from _05_Departments import *
 from _10_Generations import *
 
@@ -58,6 +59,13 @@ output = Classes.run()
 dt2 = datetime.now()
 sec = math.ceil((dt2 - dt1).total_seconds())
 print('--------------> Classes: ' + str(sec) + ' sec. ' + str(output))
+
+# _07_Teachers
+dt1 = datetime.now()
+output = Teachers.run()
+dt2 = datetime.now()
+sec = math.ceil((dt2 - dt1).total_seconds())
+print('--------------> Teachers: ' + str(sec) + ' sec. ' + str(output))
 
 # _10_Generations
 dt1 = datetime.now()

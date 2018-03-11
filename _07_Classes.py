@@ -15,16 +15,21 @@ class Classes:
         for result in results:
             row_dict = {}
             row_dict['ID'] = result['_id']
-            row_dict['Name'] = result['classDetail']['name']
-            row_dict['NameTH'] = result['classDetail']['th']['name']
-            row_dict['Building'] = result['classDetail']['building']
-            row_dict['BuildingTH'] = result['classDetail']['th']['building']
-            row_dict['Room'] = result['classDetail']['room']
-            row_dict['RoomTH'] = result['classDetail']['th']['room']
-            row_dict['Credits'] = result['classDetail']['credits']
-            row_dict['MissedAllow'] = result['classDetail']['missedAllow']
+
+            classDetail = result['classDetail']
+            classDetailTH = classDetail['th']
+
+            row_dict['Name'] = classDetail['name']
+            row_dict['NameTH'] = classDetailTH['name']
+            row_dict['Building'] = classDetail['building']
+            row_dict['BuildingTH'] = classDetailTH['building']
+            row_dict['Room'] = classDetail['room']
+            row_dict['RoomTH'] = classDetailTH['room']
+            row_dict['Credits'] = classDetail['credits']
+            row_dict['MissedAllow'] = classDetail['missedAllow']
             row_dict['SubjectID'] = result['subject']
             row_dict['SchoolYearID'] = result['schoolYear']
+
             row_list.append(row_dict)
 
         return pd.DataFrame(row_list)
