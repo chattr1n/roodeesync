@@ -1,5 +1,7 @@
 from driver import Driver
 import pandas as pd
+import numpy as np
+import datetime
 
 
 class Teachers:
@@ -22,7 +24,7 @@ class Teachers:
             row_dict['Middlename'] = userProfile['middlename'] if 'middlename' in userProfile.keys() else ''
             row_dict['Surname'] = userProfile['surname'] if 'surname' in userProfile.keys() else ''
             row_dict['NickName'] = userProfile['nickname'] if 'nickname' in userProfile.keys() else ''
-            row_dict['DateOfBirth'] = userProfile['dateOfBirth'] if 'dateOfBirth' in userProfile.keys() else ''
+            row_dict['DateOfBirth'] = Teachers.format_datetime(userProfile['dateOfBirth']) if 'dateOfBirth' in userProfile.keys() else datetime.datetime(1900, 1, 1, 0, 0, 0)
             row_dict['Gender'] = userProfile['gender'] if 'gender' in userProfile.keys() else ''
             row_dict['Religion'] = userProfile['religion'] if 'religion' in userProfile.keys() else ''
             row_dict['BloodType'] = userProfile['bloodType'] if 'bloodType' in userProfile.keys() else ''
@@ -36,12 +38,12 @@ class Teachers:
             row_dict['NationalID'] = userProfile['nationalNo'] if 'nationalNo' in userProfile.keys() else ''
             row_dict['Institution'] = userProfile['institution'] if 'institution' in userProfile.keys() else ''
             row_dict['GraduatedYear'] = userProfile['graduatedYear'] if 'graduatedYear' in userProfile.keys() else ''
-            row_dict['EntryDate'] = userProfile['entryDate'] if 'entryDate' in userProfile.keys() else ''
+            row_dict['EntryDate'] = Teachers.format_datetime(userProfile['entryDate']) if 'entryDate' in userProfile.keys() else datetime.datetime(1900, 1, 1, 0, 0, 0)
             row_dict['Nationality'] = userProfile['nationality'] if 'nationality' in userProfile.keys() else ''
             row_dict['ZipCode'] = userProfile['zipCode'] if 'zipCode' in userProfile.keys() else ''
             row_dict['Province'] = userProfile['province'] if 'province' in userProfile.keys() else ''
             row_dict['TeacherLicenseNo'] = userProfile['teacherLicenseNo'] if 'teacherLicenseNo' in userProfile.keys() else ''
-            row_dict['ExprCertificationDate'] = userProfile['exprCertificationDate'] if 'exprCertificationDate' in userProfile.keys() else ''
+            row_dict['ExprCertificationDate'] = Teachers.format_datetime(userProfile['exprCertificationDate']) if 'exprCertificationDate' in userProfile.keys() else datetime.datetime(1900, 1, 1, 0, 0, 0)
 
             userProfileTH = userProfile['th']
             row_dict['NameTH'] = userProfileTH['name'] if 'name' in userProfileTH.keys() else ''
@@ -117,6 +119,19 @@ class Teachers:
         return [insert_df, update_df, delete_df]
 
     @staticmethod
+    def format_datetime(dt):
+
+        if pd.isnull(dt):
+            return datetime.datetime(1900, 1, 1, 0, 0, 0)
+        if str(type(dt)) == "<class 'str'>":
+            return datetime.datetime(1900, 1, 1, 0, 0, 0)
+        if str(type(dt)) == "<class 'datetime.datetime'>":
+            return dt
+
+        # at this point, it's probably timestamp datatype
+        return dt.to_pydatetime()
+
+    @staticmethod
     def upsert(upsert_df):
 
         params = []
@@ -127,7 +142,7 @@ class Teachers:
             Middlename = row['Middlename']
             Surname = row['Surname']
             NickName = row['NickName']
-            DateOfBirth = row['DateOfBirth']
+            DateOfBirth = Teachers.format_datetime(row['DateOfBirth'])
             Gender = row['Gender']
             Religion = row['Religion']
             BloodType = row['BloodType']
@@ -141,12 +156,12 @@ class Teachers:
             NationalID = row['NationalID']
             Institution = row['Institution']
             GraduatedYear = row['GraduatedYear']
-            EntryDate = row['EntryDate']
+            EntryDate = Teachers.format_datetime(row['EntryDate'])
             Nationality = row['Nationality']
             ZipCode = row['ZipCode']
             Province = row['Province']
             TeacherLicenseNo = row['TeacherLicenseNo']
-            ExprCertificationDate = row['ExprCertificationDate']
+            ExprCertificationDate = Teachers.format_datetime(row['ExprCertificationDate']) #.to_pydatetime()
             NameTH = row['NameTH']
             MiddlenameTH = row['MiddlenameTH']
             SurNameTH = row['SurNameTH']
