@@ -1,4 +1,5 @@
 import math
+
 from _01_TaskListCat import *
 from _02_PeriodList import *
 from _03_GradeCat import *
@@ -9,6 +10,10 @@ from _07_Classes import *
 from _08_Teachers import *
 from _09_ClassTeachers import *
 from _10_Generations import *
+from _11_Students import *
+from _13_ClassStudents import *
+
+from datetime import datetime
 
 start_dt = datetime.now()
 
@@ -81,6 +86,20 @@ output = Generations.run()
 dt2 = datetime.now()
 sec = math.ceil((dt2 - dt1).total_seconds())
 print('--------------> Generations: ' + str(sec) + ' sec. ' + str(output))
+
+# _11_Students
+dt1 = datetime.now()
+output = Students.run()
+dt2 = datetime.now()
+sec = math.ceil((dt2 - dt1).total_seconds())
+print('--------------> Students: ' + str(sec) + ' sec. ' + str(output))
+
+# _13_ClassStudents
+dt1 = datetime.now()
+output = ClassStudents.run()
+dt2 = datetime.now()
+sec = math.ceil((dt2 - dt1).total_seconds())
+print('--------------> ClassStudents: ' + str(sec) + ' sec. ' + str(output))
 
 
 

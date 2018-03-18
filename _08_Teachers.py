@@ -23,33 +23,13 @@ class Teachers:
             row_dict['Name'] = userProfile['name'] if 'name' in userProfile.keys() else ''
             row_dict['Middlename'] = userProfile['middlename'] if 'middlename' in userProfile.keys() else ''
             row_dict['Surname'] = userProfile['surname'] if 'surname' in userProfile.keys() else ''
-            row_dict['NickName'] = userProfile['nickname'] if 'nickname' in userProfile.keys() else ''
-            row_dict['DateOfBirth'] = Teachers.format_datetime(userProfile['dateOfBirth']) if 'dateOfBirth' in userProfile.keys() else datetime.datetime(1900, 1, 1, 0, 0, 0)
-            row_dict['Gender'] = userProfile['gender'] if 'gender' in userProfile.keys() else ''
-            row_dict['Religion'] = userProfile['religion'] if 'religion' in userProfile.keys() else ''
-            row_dict['BloodType'] = userProfile['bloodType'] if 'bloodType' in userProfile.keys() else ''
-            row_dict['MedicalHistory'] = userProfile['medicalHistory'] if 'medicalHistory' in userProfile.keys() else ''
-            row_dict['Address'] = userProfile['address'] if 'address' in userProfile.keys() else ''
-            row_dict['MobilePhone'] = userProfile['mobilePhone'] if 'mobilePhone' in userProfile.keys() else ''
             row_dict['Email'] = userProfile['email'] if 'email' in userProfile.keys() else ''
-            row_dict['Education'] = userProfile['education'] if 'education' in userProfile.keys() else ''
-            row_dict['SchoolID'] = userProfile['idSchool'] if 'idSchool' in userProfile.keys() else ''
-            row_dict['Photo'] = userProfile['photo'] if 'photo' in userProfile.keys() else ''
-            row_dict['NationalID'] = userProfile['nationalNo'] if 'nationalNo' in userProfile.keys() else ''
-            row_dict['Institution'] = userProfile['institution'] if 'institution' in userProfile.keys() else ''
-            row_dict['GraduatedYear'] = userProfile['graduatedYear'] if 'graduatedYear' in userProfile.keys() else ''
-            row_dict['EntryDate'] = Teachers.format_datetime(userProfile['entryDate']) if 'entryDate' in userProfile.keys() else datetime.datetime(1900, 1, 1, 0, 0, 0)
-            row_dict['Nationality'] = userProfile['nationality'] if 'nationality' in userProfile.keys() else ''
-            row_dict['ZipCode'] = userProfile['zipCode'] if 'zipCode' in userProfile.keys() else ''
-            row_dict['Province'] = userProfile['province'] if 'province' in userProfile.keys() else ''
-            row_dict['TeacherLicenseNo'] = userProfile['teacherLicenseNo'] if 'teacherLicenseNo' in userProfile.keys() else ''
-            row_dict['ExprCertificationDate'] = Teachers.format_datetime(userProfile['exprCertificationDate']) if 'exprCertificationDate' in userProfile.keys() else datetime.datetime(1900, 1, 1, 0, 0, 0)
+            row_dict['TeacherNo'] = userProfile['teacherNo'] if 'teacherNo' in userProfile.keys() else ''
 
             userProfileTH = userProfile['th']
             row_dict['NameTH'] = userProfileTH['name'] if 'name' in userProfileTH.keys() else ''
             row_dict['MiddlenameTH'] = userProfileTH['middlename'] if 'middlename' in userProfileTH.keys() else ''
             row_dict['SurNameTH'] = userProfileTH['surname'] if 'surname' in userProfileTH.keys() else ''
-            row_dict['NickNameTH'] = userProfileTH['nickname'] if 'nickname' in userProfileTH.keys() else ''
 
             row_list.append(row_dict)
 
@@ -84,34 +64,14 @@ class Teachers:
         if len(d1) > 0:
             update_df = d1[~(
                 (d1['Username'] == d2['Username'])
+                & (d1['Email'] == d2['Email'])
                 & (d1['Name'] == d2['Name'])
                 & (d1['Middlename'] == d2['Middlename'])
                 & (d1['Surname'] == d2['Surname'])
-                & (d1['NickName'] == d2['NickName'])
-                & (d1['DateOfBirth'] == d2['DateOfBirth'])
-                & (d1['Gender'] == d2['Gender'])
-                & (d1['Religion'] == d2['Religion'])
-                & (d1['BloodType'] == d2['BloodType'])
-                & (d1['MedicalHistory'] == d2['MedicalHistory'])
-                & (d1['Address'] == d2['Address'])
-                & (d1['MobilePhone'] == d2['MobilePhone'])
-                & (d1['Email'] == d2['Email'])
-                & (d1['Education'] == d2['Education'])
-                & (d1['SchoolID'] == d2['SchoolID'])
-                & (d1['Photo'] == d2['Photo'])
-                & (d1['NationalID'] == d2['NationalID'])
-                & (d1['Institution'] == d2['Institution'])
-                & (d1['GraduatedYear'] == d2['GraduatedYear'])
-                & (d1['EntryDate'] == d2['EntryDate'])
-                & (d1['Nationality'] == d2['Nationality'])
-                & (d1['ZipCode'] == d2['ZipCode'])
-                & (d1['Province'] == d2['Province'])
-                & (d1['TeacherLicenseNo'] == d2['TeacherLicenseNo'])
-                & (d1['ExprCertificationDate'] == d2['ExprCertificationDate'])
                 & (d1['NameTH'] == d2['NameTH'])
                 & (d1['MiddlenameTH'] == d2['MiddlenameTH'])
                 & (d1['SurNameTH'] == d2['SurNameTH'])
-                & (d1['NickNameTH'] == d2['NickNameTH'])
+                & (d1['TeacherNo'] == d2['TeacherNo'])
             )]
 
         update_df.reset_index(inplace=True)
@@ -138,43 +98,21 @@ class Teachers:
         for index, row in upsert_df.iterrows():
             ID = row['ID']
             Username = row['Username']
+            Email = row['Email']
             Name = row['Name']
             Middlename = row['Middlename']
             Surname = row['Surname']
-            NickName = row['NickName']
-            DateOfBirth = Teachers.format_datetime(row['DateOfBirth'])
-            Gender = row['Gender']
-            Religion = row['Religion']
-            BloodType = row['BloodType']
-            MedicalHistory = row['MedicalHistory']
-            Address = row['Address']
-            MobilePhone = row['MobilePhone']
-            Email = row['Email']
-            Education = row['Education']
-            SchoolID = row['SchoolID']
-            Photo = row['Photo']
-            NationalID = row['NationalID']
-            Institution = row['Institution']
-            GraduatedYear = row['GraduatedYear']
-            EntryDate = Teachers.format_datetime(row['EntryDate'])
-            Nationality = row['Nationality']
-            ZipCode = row['ZipCode']
-            Province = row['Province']
-            TeacherLicenseNo = row['TeacherLicenseNo']
-            ExprCertificationDate = Teachers.format_datetime(row['ExprCertificationDate']) #.to_pydatetime()
             NameTH = row['NameTH']
             MiddlenameTH = row['MiddlenameTH']
             SurNameTH = row['SurNameTH']
-            NickNameTH = row['NickNameTH']
+            TeacherNo = row['TeacherNo']
 
             params.append(
                 (
-                    ID, Username, Name, Middlename, Surname, NickName, DateOfBirth,
-                    Gender, Religion, BloodType, MedicalHistory, Address, MobilePhone,
-                    Email, Education, SchoolID, Photo, NationalID, Institution,
-                    GraduatedYear, EntryDate, Nationality, ZipCode, Province,
-                    TeacherLicenseNo, ExprCertificationDate, NameTH, MiddlenameTH,
-                    SurNameTH, NickNameTH
+                    ID, Username, Email,
+                    Name, Middlename, Surname,
+                    NameTH, MiddlenameTH, SurNameTH,
+                    TeacherNo
                 )
             )
 
