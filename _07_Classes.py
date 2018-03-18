@@ -25,8 +25,8 @@ class Classes:
             row_dict['BuildingTH'] = classDetailTH['building']
             row_dict['Room'] = classDetail['room']
             row_dict['RoomTH'] = classDetailTH['room']
-            row_dict['Credits'] = classDetail['credits']
-            row_dict['MissedAllow'] = classDetail['missedAllow']
+            row_dict['Credits'] = str(classDetail['credits'])
+            row_dict['MissedAllow'] = str(classDetail['missedAllow'])
             row_dict['SubjectID'] = result['subject']
             row_dict['SchoolYearID'] = result['schoolYear']
 
