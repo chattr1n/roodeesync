@@ -9,11 +9,11 @@ class ClassStudents:
     def get_mongo():
         row_list = []
         db = Driver.get_mongo()
-        results = db['app-classes'].find({},{'id': 1, 'Students':1})
+        results = db['app-classes'].find({},{'id': 1, 'students':1})
         for result in results:
             row_dict = {}
             row_dict['ClassID'] = result['_id']
-            Students = result['Students']
+            Students = result['students']
             for Student in Students:
                 row_dict['StudentID'] = Student['value']
                 row_list.append(row_dict)
