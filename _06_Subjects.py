@@ -61,9 +61,9 @@ class Subjects:
         return [insert_df, update_df, delete_df]
 
     @staticmethod
-    def upsert(upsert_df):
+    def upsert(upsert_df, Method):
 
-        params = []
+        sql_list = []
         for index, row in upsert_df.iterrows():
             ID = row['ID']
             Name = row['Name']
@@ -71,9 +71,15 @@ class Subjects:
             Code = row['Code']
             DepartmentID = row['DepartmentID']
 
-            params.append((ID, Name, NameTH, Code, DepartmentID))
+            sql = 'exec spSubjects' + Method + ' '
+            sql += '@ID="' + ID + '",'
+            sql += '@Name="' + Name + '",'
+            sql += '@NameTH="' + NameTH + '",'
+            sql += '@Code="' + Code + '",'
+            sql += '@DepartmentID="' + DepartmentID + '"'
+            sql_list.append(sql)
 
-        Driver.upsert_or_delete_mssql('spSubjectsUpsert', params)
+        Driver.executemany(sql_list)
 
     @staticmethod
     def delete(delete_df):
@@ -95,8 +101,8 @@ class Subjects:
 
         [insert_df, update_df, delete_df] = Subjects.diff(df1, df2)
 
-        Subjects.upsert(insert_df)
-        Subjects.upsert(update_df)
+        Subjects.upsert(insert_df, 'Insert')
+        Subjects.upsert(update_df, 'Update')
         Subjects.delete(delete_df)
 
         return [len(insert_df), len(update_df), len(delete_df)]

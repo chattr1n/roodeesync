@@ -25,8 +25,6 @@ class Classes:
             row_dict['BuildingTH'] = classDetailTH['building']
             row_dict['Room'] = classDetail['room']
             row_dict['RoomTH'] = classDetailTH['room']
-            row_dict['Credits'] = str(classDetail['credits'])
-            row_dict['MissedAllow'] = str(classDetail['missedAllow'])
             row_dict['SubjectID'] = result['subject']
             row_dict['SchoolYearID'] = result['schoolYear']
 
@@ -68,8 +66,6 @@ class Classes:
                 & (d1['BuildingTH'] == d2['BuildingTH'])
                 & (d1['Room'] == d2['Room'])
                 & (d1['RoomTH'] == d2['RoomTH'])
-                & (d1['Credits'] == d2['Credits'])
-                & (d1['MissedAllow'] == d2['MissedAllow'])
                 & (d1['SubjectID'] == d2['SubjectID'])
                 & (d1['SchoolYearID'] == d2['SchoolYearID'])
             )]
@@ -79,8 +75,8 @@ class Classes:
         return [insert_df, update_df, delete_df]
 
     @staticmethod
-    def upsert(upsert_df):
-        params = []
+    def upsert(upsert_df, method):
+        sql_list = []
         for index, row in upsert_df.iterrows():
             ID = row['ID']
             Name = row['Name']
@@ -89,14 +85,23 @@ class Classes:
             BuildingTH = row['BuildingTH']
             Room = row['Room']
             RoomTH = row['RoomTH']
-            Credits = row['Credits']
-            MissedAllow = row['MissedAllow']
             SubjectID = row['SubjectID']
             SchoolYearID = row['SchoolYearID']
 
-            params.append((ID, Name, NameTH, Building, BuildingTH, Room, RoomTH, Credits, MissedAllow, SubjectID, SchoolYearID))
+            sql = 'exec spClasses' + method + ' '
+            sql += '@ID="' + ID + '",'
+            sql += '@Name="' + Name + '",'
+            sql += '@NameTH="' + NameTH + '",'
+            sql += '@Building="' + Building + '",'
+            sql += '@BuildingTH="' + BuildingTH + '",'
+            sql += '@Room="' + Room + '",'
+            sql += '@RoomTH="' + RoomTH + '",'
+            sql += '@SubjectID="' + SubjectID + '",'
+            sql += '@SchoolYearID="' + SchoolYearID + '"'
+            sql_list.append(sql)
 
-        Driver.upsert_or_delete_mssql('spClassesUpsert', params)
+        Driver.executemany(sql_list)
+
 
     @staticmethod
     def delete(delete_df):
@@ -117,8 +122,8 @@ class Classes:
 
         [insert_df, update_df, delete_df] = Classes.diff(df1, df2)
 
-        Classes.upsert(insert_df)
-        Classes.upsert(update_df)
+        Classes.upsert(insert_df, 'Insert')
+        Classes.upsert(update_df, 'Update')
         Classes.delete(delete_df)
 
         return [len(insert_df), len(update_df), len(delete_df)]

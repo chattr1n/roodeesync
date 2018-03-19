@@ -64,7 +64,7 @@ class SchoolYears:
     
     
     @staticmethod
-    def upsert(upsert_df):
+    def upsert(upsert_df, Method):
 
         params = []
         for index, row in upsert_df.iterrows():
@@ -76,7 +76,7 @@ class SchoolYears:
 
             params.append((ID, Name, NameTH, BeginDate, EndDate))
                         
-        Driver.upsert_or_delete_mssql('spSchoolYearsUpsert', params)
+        Driver.upsert_or_delete_mssql('spSchoolYears' + Method, params)
         
     
     @staticmethod
@@ -99,8 +99,8 @@ class SchoolYears:
         
         [insert_df, update_df, delete_df] = SchoolYears.diff(df1, df2)
                     
-        SchoolYears.upsert(insert_df)
-        SchoolYears.upsert(update_df)
+        SchoolYears.upsert(insert_df, 'Insert')
+        SchoolYears.upsert(update_df, 'Update')
         SchoolYears.delete(delete_df)
 
         return [len(insert_df), len(update_df), len(delete_df)]

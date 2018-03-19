@@ -35,28 +35,28 @@ class ClassTeachers:
         return [insert_df, delete_df]
 
     @staticmethod
-    def upsert(upsert_df):
+    def Insert(upsert_df):
 
-        params = []
+        sql_list = []
         for index, row in upsert_df.iterrows():
             ClassID = row['ClassID']
             TeacherID = row['TeacherID']
 
-            params.append((ClassID, TeacherID))
+            sql_list.append('exec spClassTeachersInsert "' + ClassID + '", "' + TeacherID + '"')
 
-        Driver.upsert_or_delete_mssql('spClassTeachersUpsert', params)
+        Driver.executemany(sql_list)
 
     @staticmethod
     def delete(delete_df):
 
-        params = []
+        sql_list = []
         for index, row in delete_df.iterrows():
             ClassID = row['ClassID']
             TeacherID = row['TeacherID']
 
-            params.append((ClassID, TeacherID))
+            sql_list.append('exec spClassTeachersDelete @ClassID="' + ClassID + '", @TeacherID="' + TeacherID + '"')
 
-        Driver.upsert_or_delete_mssql('spClassTeachersDelete', params)
+        Driver.executemany(sql_list)
 
     @staticmethod
     def run():
@@ -71,7 +71,7 @@ class ClassTeachers:
 
         [insert_df, delete_df] = ClassTeachers.diff(df1, df2)
 
-        ClassTeachers.upsert(insert_df)
+        ClassTeachers.Insert(insert_df)
         ClassTeachers.delete(delete_df)
 
         return [len(insert_df), -1, len(delete_df)]

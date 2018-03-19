@@ -59,7 +59,7 @@ class Departments:
     
     
     @staticmethod
-    def upsert(upsert_df):
+    def upsert(upsert_df, Method):
 
         params = []
         for index, row in upsert_df.iterrows():
@@ -69,7 +69,7 @@ class Departments:
 
             params.append((ID, Name, NameTH))
                         
-        Driver.upsert_or_delete_mssql('spDepartmentsUpsert', params)
+        Driver.upsert_or_delete_mssql('spDepartments' + Method, params)
         
     
     @staticmethod
@@ -91,8 +91,8 @@ class Departments:
         
         [insert_df, update_df, delete_df] = Departments.diff(df1, df2)
                     
-        Departments.upsert(insert_df)
-        Departments.upsert(update_df)
+        Departments.upsert(insert_df, 'Insert')
+        Departments.upsert(update_df, 'Update')
         Departments.delete(delete_df)
 
         return [len(insert_df), len(update_df), len(delete_df)]

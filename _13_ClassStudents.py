@@ -9,11 +9,11 @@ class ClassStudents:
     def get_mongo():
         row_list = []
         db = Driver.get_mongo()
-        results = db['app-classes'].find({},{'id': 1, 'Students':1})
+        results = db['app-classes'].find({},{'id': 1, 'students':1})
         for result in results:
             row_dict = {}
             row_dict['ClassID'] = result['_id']
-            Students = result['Students']
+            Students = result['students']
             for Student in Students:
                 row_dict['StudentID'] = Student['value']
                 row_list.append(row_dict)
@@ -37,26 +37,27 @@ class ClassStudents:
     @staticmethod
     def upsert(upsert_df):
 
-        params = []
+        sql_list = []
         for index, row in upsert_df.iterrows():
             ClassID = row['ClassID']
             StudentID = row['StudentID']
 
-            params.append((ClassID, StudentID))
+            sql_list.append('exec spClassStudentsInsert @ClassID="' + ClassID + '", @StudentID="' + StudentID + '"')
 
-        Driver.upsert_or_delete_mssql('spClassStudentsUpsert', params)
+        Driver.executemany(sql_list)
 
     @staticmethod
     def delete(delete_df):
 
-        params = []
+        sql_list = []
         for index, row in delete_df.iterrows():
             ClassID = row['ClassID']
             StudentID = row['StudentID']
 
-            params.append((ClassID, StudentID))
+            sql_list.append('exec spClassStudentsDelete "' + ClassID + '", "' + StudentID + '"')
 
-        Driver.upsert_or_delete_mssql('spClassStudentsDelete', params)
+        Driver.executemany(sql_list)
+
 
     @staticmethod
     def run():

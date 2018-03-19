@@ -60,7 +60,7 @@ class Generations:
     
     
     @staticmethod
-    def upsert(upsert_df):
+    def upsert(upsert_df, Method):
 
         params  =[]
         for index, row in upsert_df.iterrows():
@@ -70,7 +70,7 @@ class Generations:
 
             params.append((ID, Name, NameTH))
             
-        Driver.upsert_or_delete_mssql('spGenerationsUpsert', params)
+        Driver.upsert_or_delete_mssql('spGenerations' + Method, params)
         
     
     @staticmethod
@@ -93,8 +93,8 @@ class Generations:
         
         [insert_df, update_df, delete_df] = Generations.diff(df1, df2)
                     
-        Generations.upsert(insert_df)
-        Generations.upsert(update_df)
+        Generations.upsert(insert_df, 'Insert')
+        Generations.upsert(update_df, 'Update')
         Generations.delete(delete_df)
 
         return [len(insert_df), len(update_df), len(delete_df)]

@@ -92,9 +92,9 @@ class Teachers:
         return dt.to_pydatetime()
 
     @staticmethod
-    def upsert(upsert_df):
+    def upsert(upsert_df, Method):
 
-        params = []
+        sql_list = []
         for index, row in upsert_df.iterrows():
             ID = row['ID']
             Username = row['Username']
@@ -107,16 +107,21 @@ class Teachers:
             SurNameTH = row['SurNameTH']
             TeacherNo = row['TeacherNo']
 
-            params.append(
-                (
-                    ID, Username, Email,
-                    Name, Middlename, Surname,
-                    NameTH, MiddlenameTH, SurNameTH,
-                    TeacherNo
-                )
-            )
+            sql = 'exec spTeachers' + Method + ' '
+            sql += '@ID="' + ID + '",'
+            sql += '@Username="' + Username + '",'
+            sql += '@Email="' + Email + '",'
+            sql += '@Name="' + Name + '",'
+            sql += '@Middlename="' + Middlename + '",'
+            sql += '@Surname="' + Surname + '",'
+            sql += '@NameTH="' + NameTH + '",'
+            sql += '@MiddlenameTH="' + MiddlenameTH + '",'
+            sql += '@SurNameTH="' + SurNameTH + '",'
+            sql += '@TeacherNo="' + TeacherNo + '"'
+            sql_list.append(sql)
 
-        Driver.upsert_or_delete_mssql('spTeachersUpsert', params)
+        Driver.executemany(sql_list)
+
 
     @staticmethod
     def delete(delete_df):
@@ -138,8 +143,8 @@ class Teachers:
 
         [insert_df, update_df, delete_df] = Teachers.diff(df1, df2)
 
-        Teachers.upsert(insert_df)
-        Teachers.upsert(update_df)
+        Teachers.upsert(insert_df, 'Insert')
+        Teachers.upsert(update_df, 'Update')
         Teachers.delete(delete_df)
 
         return [len(insert_df), len(update_df), len(delete_df)]

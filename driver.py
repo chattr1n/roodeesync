@@ -48,7 +48,34 @@ class Driver:
             with conn.cursor(as_dict=True) as cursor:
                 for index, param in enumerate(params):
                     cursor.callproc(proc, param)
-                    if index % 10 == 0:
+                    if len(params) > 1000:
+                        if index % 1000 == 0:
+                            conn.commit()
+                            print(index)
+                conn.commit()
+
+    @staticmethod
+    def executemany(sql_list):
+
+        settings = Driver.load_settings()
+        server = settings['MSSQL_Server']
+        username = settings['MSSQL_User']
+        password = settings['MSSQL_Pass']
+        dbname = settings['MSSQL_DBName']
+
+        with pymssql.connect(server, username, password, dbname) as conn:
+            with conn.cursor(as_dict=True) as cursor:
+                run_this = ''
+                for index, sql in enumerate(sql_list):
+
+                    run_this = run_this + '\r\n' + sql.replace('"', "'")
+
+                    if index % 1000 == 0:
+                        cursor.execute(run_this)
                         conn.commit()
+                        run_this = ''
+                        # print(index)
+
+                cursor.execute(run_this)
                 conn.commit()
 

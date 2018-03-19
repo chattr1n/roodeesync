@@ -10,7 +10,7 @@ class Students:
         row_list = []
 
         db = Driver.get_mongo()
-        results = db['users'].find({"roles": "teacher"})
+        results = db['users'].find({"roles": "student"})
 
         for result in results:
             row_dict = {}
@@ -93,9 +93,9 @@ class Students:
         return dt.to_pydatetime()
 
     @staticmethod
-    def upsert(upsert_df):
+    def upsert(upsert_df, Method):
 
-        params = []
+        sql_list = []
         for index, row in upsert_df.iterrows():
             ID = row['ID']
             GenerationID = row['GenerationID']
@@ -109,16 +109,21 @@ class Students:
             SurNameTH = row['SurNameTH']
             StudentNo = row['StudentNo']
 
-            params.append(
-                (
-                    ID, GenerationID, Username, Email,
-                    Name, Middlename, Surname,
-                    NameTH, MiddlenameTH, SurNameTH,
-                    StudentNo
-                )
-            )
+            sql = 'exec spStudents' + Method + ' '
+            sql += '@ID="' + ID + '",'
+            sql += '@GenerationID="' + GenerationID + '",'
+            sql += '@Username="' + Username + '",'
+            sql += '@Email="' + Email + '",'
+            sql += '@Name="' + Name + '",'
+            sql += '@Middlename="' + Middlename + '",'
+            sql += '@Surname="' + Surname + '",'
+            sql += '@NameTH="' + NameTH + '",'
+            sql += '@MiddlenameTH="' + MiddlenameTH + '",'
+            sql += '@SurNameTH="' + SurNameTH + '",'
+            sql += '@StudentNo="' + StudentNo + '"'
+            sql_list.append(sql)
 
-        Driver.upsert_or_delete_mssql('spStudentsUpsert', params)
+        Driver.executemany(sql_list)
 
     @staticmethod
     def delete(delete_df):
@@ -140,8 +145,8 @@ class Students:
 
         [insert_df, update_df, delete_df] = Students.diff(df1, df2)
 
-        Students.upsert(insert_df)
-        Students.upsert(update_df)
+        Students.upsert(insert_df, 'Insert')
+        Students.upsert(update_df, 'Update')
         Students.delete(delete_df)
 
         return [len(insert_df), len(update_df), len(delete_df)]

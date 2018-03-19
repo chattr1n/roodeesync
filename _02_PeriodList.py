@@ -64,7 +64,7 @@ class PeriodList:
         return [insert_df, update_df, delete_df]
 
     @staticmethod
-    def upsert(upsert_df):
+    def upsert(upsert_df, Method):
         params = []
         for index, row in upsert_df.iterrows():
             ID = row['ID']
@@ -76,7 +76,7 @@ class PeriodList:
 
             params.append((ID, Name, NameTH, Color, BeginDT.to_pydatetime(), EndDT.to_pydatetime()))
 
-        Driver.upsert_or_delete_mssql('spPeriodListUpsert', params)
+        Driver.upsert_or_delete_mssql('spPeriodList' + Method, params)
 
     @staticmethod
     def delete(delete_df):
@@ -97,8 +97,8 @@ class PeriodList:
 
         [insert_df, update_df, delete_df] = PeriodList.diff(df1, df2)
 
-        PeriodList.upsert(insert_df)
-        PeriodList.upsert(update_df)
+        PeriodList.upsert(insert_df, 'Insert')
+        PeriodList.upsert(update_df, 'Update')
         PeriodList.delete(delete_df)
 
         return [len(insert_df), len(update_df), len(delete_df)]

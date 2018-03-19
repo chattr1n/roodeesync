@@ -62,7 +62,7 @@ class GradeCat:
     
     
     @staticmethod
-    def upsert(upsert_df):
+    def upsert(upsert_df, Method):
 
         params = []
         for index, row in upsert_df.iterrows():
@@ -73,7 +73,7 @@ class GradeCat:
 
             params.append((ID, Name, NameTH, Color))
             
-        Driver.upsert_or_delete_mssql('spGradeCatUpsert', params)
+        Driver.upsert_or_delete_mssql('spGradeCat' + Method, params)
         
     
     @staticmethod
@@ -96,8 +96,8 @@ class GradeCat:
         
         [insert_df, update_df, delete_df] = GradeCat.diff(df1, df2)
                     
-        GradeCat.upsert(insert_df)
-        GradeCat.upsert(update_df)
+        GradeCat.upsert(insert_df, 'Insert')
+        GradeCat.upsert(update_df, 'Update')
         GradeCat.delete(delete_df)
 
         return [len(insert_df), len(update_df), len(delete_df)]
