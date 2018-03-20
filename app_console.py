@@ -12,6 +12,7 @@ from _09_ClassTeachers import *
 from _10_Generations import *
 from _11_Students import *
 from _13_ClassStudents import *
+from _14_Attendances import *
 
 from datetime import datetime
 
@@ -100,6 +101,13 @@ output = ClassStudents.run()
 dt2 = datetime.now()
 sec = math.ceil((dt2 - dt1).total_seconds())
 print('--------------> ClassStudents: ' + str(sec) + ' sec. ' + str(output))
+
+# _14_Attendances
+dt1 = datetime.now()
+output = Attendances.run()
+dt2 = datetime.now()
+sec = math.ceil((dt2 - dt1).total_seconds())
+print('--------------> Attendances: ' + str(sec) + ' sec. ' + str(output))
 
 
 
