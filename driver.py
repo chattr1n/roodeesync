@@ -67,15 +67,12 @@ class Driver:
             with conn.cursor(as_dict=True) as cursor:
                 run_this = ''
                 for index, sql in enumerate(sql_list):
-
                     run_this = run_this + '\r\n' + sql.replace('"', "'")
-
-                    if index % 5000 == 0:
+                    if index % 1000 == 0:
+                        # print(run_this)
                         cursor.execute(run_this)
                         conn.commit()
                         run_this = ''
-                        # print(index)
-
                 cursor.execute(run_this)
                 conn.commit()
 

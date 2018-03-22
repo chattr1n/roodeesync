@@ -7,12 +7,13 @@ from _04_SchoolYears import *
 from _05_Departments import *
 from _06_Subjects import *
 from _07_Classes import *
-from _08_Teachers import *
-from _09_ClassTeachers import *
-from _10_Generations import *
-from _11_Students import *
-from _13_ClassStudents import *
-from _14_Attendances import *
+from _08_ClassPeriods import *
+from _09_Teachers import *
+from _10_ClassTeachers import *
+from _11_Generations import *
+from _12_Students import *
+from _14_ClassStudents import *
+from _15_Attendances import *
 
 from datetime import datetime
 
@@ -67,42 +68,49 @@ dt2 = datetime.now()
 sec = math.ceil((dt2 - dt1).total_seconds())
 print('--------------> Classes: ' + str(sec) + ' sec. ' + str(output))
 
-# _08_Teachers
+# _08_ClassPeriods
+dt1 = datetime.now()
+output = ClassPeriods.run()
+dt2 = datetime.now()
+sec = math.ceil((dt2 - dt1).total_seconds())
+print('--------------> ClassPeriods: ' + str(sec) + ' sec. ' + str(output))
+
+# _09_Teachers
 dt1 = datetime.now()
 output = Teachers.run()
 dt2 = datetime.now()
 sec = math.ceil((dt2 - dt1).total_seconds())
 print('--------------> Teachers: ' + str(sec) + ' sec. ' + str(output))
 
-# _09_ClassTeachers
+# _10_ClassTeachers
 dt1 = datetime.now()
 output = ClassTeachers.run()
 dt2 = datetime.now()
 sec = math.ceil((dt2 - dt1).total_seconds())
 print('--------------> ClassTeachers: ' + str(sec) + ' sec. ' + str(output))
 
-# _10_Generations
+# _11_Generations
 dt1 = datetime.now()
 output = Generations.run()
 dt2 = datetime.now()
 sec = math.ceil((dt2 - dt1).total_seconds())
 print('--------------> Generations: ' + str(sec) + ' sec. ' + str(output))
 
-# _11_Students
+# _12_Students
 dt1 = datetime.now()
 output = Students.run()
 dt2 = datetime.now()
 sec = math.ceil((dt2 - dt1).total_seconds())
 print('--------------> Students: ' + str(sec) + ' sec. ' + str(output))
 
-# _13_ClassStudents
+# _14_ClassStudents
 dt1 = datetime.now()
 output = ClassStudents.run()
 dt2 = datetime.now()
 sec = math.ceil((dt2 - dt1).total_seconds())
 print('--------------> ClassStudents: ' + str(sec) + ' sec. ' + str(output))
 
-# _14_Attendances
+# _15_Attendances
 dt1 = datetime.now()
 output = Attendances.run()
 dt2 = datetime.now()
