@@ -29,8 +29,8 @@ class ClassPeriods:
                 row_dict = {}
                 row_dict['ClassID'] = ClassID
                 row_dict['ClassDay'] = period['day']
-                row_dict['ClassBegin'] = str(period['begin'])[:19]
-                row_dict['ClassEnd'] = str(period['end'])[:19]
+                row_dict['ClassBegin'] = str(period['begin'])[:19].replace('T', ' ')
+                row_dict['ClassEnd'] = str(period['end'])[:19].replace('T', ' ')
                 row_list.append(row_dict)
 
         return pd.DataFrame(row_list)
@@ -55,9 +55,9 @@ class ClassPeriods:
         return [insert_df, delete_df]
 
     @staticmethod
-    def insert(upsert_df):
+    def insert(insert_df):
         sql_list = []
-        for index, row in upsert_df.iterrows():
+        for index, row in insert_df.iterrows():
             ClassID = row['ClassID']
             ClassDay = row['ClassDay']
             ClassBegin = row['ClassBegin']
@@ -76,17 +76,11 @@ class ClassPeriods:
     @staticmethod
     def delete(delete_df):
         sql_list = []
-        for row in delete_df.iterrows():
-            ClassID = row['ClassID']
-            ClassDay = row['ClassDay']
-            ClassBegin = row['ClassBegin']
-            ClassEnd = row['ClassEnd']
+        for index, row in delete_df.iterrows():
+            ID = row['ID']
 
             sql = 'exec spClassPeriodsDelete '
-            sql += '@ClassID="' + ClassID + '",'
-            sql += '@ClassDay="' + ClassDay + '",'
-            sql += '@ClassBegin="' + str(ClassBegin.to_pydatetime()) + '",'
-            sql += '@ClassEnd="' + str(ClassEnd.to_pydatetime()) + '"'
+            sql += '@ID=' + str(ID) + ''
             sql_list.append(sql)
 
         Driver.executemany(sql_list)
