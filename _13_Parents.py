@@ -3,20 +3,19 @@ import pandas as pd
 import datetime
 
 
-class Students:
+class Parents:
     @staticmethod
     def get_mongo():
 
         row_list = []
 
         db = Driver.get_mongo()
-        results = db['users'].find({"roles": "teacher"})
+        results = db['users'].find({"roles": "parent"})
 
         for result in results:
             row_dict = {}
 
             row_dict['ID'] = result['_id']
-            row_dict['GenerationID'] = result['generation']
             row_dict['Username'] = result['username']
 
             userProfile = result['userProfile']
@@ -25,10 +24,15 @@ class Students:
             row_dict['Surname'] = userProfile['surname'] if 'surname' in userProfile.keys() else ''
             row_dict['Email'] = userProfile['email'] if 'email' in userProfile.keys() else ''
 
-            userProfileTH = userProfile['th']
-            row_dict['NameTH'] = userProfileTH['name'] if 'name' in userProfileTH.keys() else ''
-            row_dict['MiddlenameTH'] = userProfileTH['middlename'] if 'middlename' in userProfileTH.keys() else ''
-            row_dict['SurNameTH'] = userProfileTH['surname'] if 'surname' in userProfileTH.keys() else ''
+            if 'th' in userProfile.keys():
+                userProfileTH = userProfile['th']
+                row_dict['NameTH'] = userProfileTH['name'] if 'name' in userProfileTH.keys() else ''
+                row_dict['MiddlenameTH'] = userProfileTH['middlename'] if 'middlename' in userProfileTH.keys() else ''
+                row_dict['SurNameTH'] = userProfileTH['surname'] if 'surname' in userProfileTH.keys() else ''
+            else:
+                row_dict['NameTH'] = ""
+                row_dict['MiddlenameTH'] = ""
+                row_dict['SurNameTH'] = ""
 
             row_list.append(row_dict)
 
@@ -37,7 +41,7 @@ class Students:
     @staticmethod
     def get_mssql():
 
-        return Driver.get_mssql('exec spStudentsGet')
+        return Driver.get_mssql('exec spParentsGet')
 
     @staticmethod
     def diff(df1, df2):
@@ -62,8 +66,7 @@ class Students:
         # d1 will have the same row count as d2
         if len(d1) > 0:
             update_df = d1[~(
-                (d1['GenerationID'] == d2['GenerationID'])
-                & (d1['Username'] == d2['Username'])
+                (d1['Username'] == d2['Username'])
                 & (d1['Email'] == d2['Email'])
                 & (d1['Name'] == d2['Name'])
                 & (d1['Middlename'] == d2['Middlename'])
@@ -91,12 +94,11 @@ class Students:
         return dt.to_pydatetime()
 
     @staticmethod
-    def upsert(upsert_df):
+    def upsert(upsert_df, Method):
 
-        params = []
+        sql_list = []
         for index, row in upsert_df.iterrows():
             ID = row['ID']
-            GenerationID = row['GenerationID']
             Username = row['Username']
             Email = row['Email']
             Name = row['Name']
@@ -106,15 +108,19 @@ class Students:
             MiddlenameTH = row['MiddlenameTH']
             SurNameTH = row['SurNameTH']
 
-            params.append(
-                (
-                    ID, GenerationID, Username, Email,
-                    Name, Middlename, Surname,
-                    NameTH, MiddlenameTH, SurNameTH
-                )
-            )
+            sql = 'exec spParents' + Method + ' '
+            sql += '@ID="' + ID + '",'
+            sql += '@Username="' + Username + '",'
+            sql += '@Email="' + Email + '",'
+            sql += '@Name="' + Name + '",'
+            sql += '@Middlename="' + Middlename + '",'
+            sql += '@Surname="' + Surname + '",'
+            sql += '@NameTH="' + NameTH + '",'
+            sql += '@MiddlenameTH="' + MiddlenameTH + '",'
+            sql += '@SurNameTH="' + SurNameTH + '"'
+            sql_list.append(sql)
 
-        Driver.upsert_or_delete_mssql('spStudentsUpsert', params)
+        Driver.executemany(sql_list)
 
     @staticmethod
     def delete(delete_df):
@@ -124,20 +130,20 @@ class Students:
             ID = row['ID']
             params.append((ID,))
 
-        Driver.upsert_or_delete_mssql('spStudentsDelete', params)
+        Driver.upsert_or_delete_mssql('spParentsDelete', params)
 
     @staticmethod
     def run():
 
         pd.set_option('display.width', 1000)
 
-        df1 = Students.get_mongo()
-        df2 = Students.get_mssql()
+        df1 = Parents.get_mongo()
+        df2 = Parents.get_mssql()
 
-        [insert_df, update_df, delete_df] = Students.diff(df1, df2)
+        [insert_df, update_df, delete_df] = Parents.diff(df1, df2)
 
-        Students.upsert(insert_df)
-        Students.upsert(update_df)
-        Students.delete(delete_df)
+        Parents.upsert(insert_df, 'Insert')
+        Parents.upsert(update_df, 'Update')
+        Parents.delete(delete_df)
 
         return [len(insert_df), len(update_df), len(delete_df)]

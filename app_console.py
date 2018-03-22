@@ -12,8 +12,10 @@ from _09_Teachers import *
 from _10_ClassTeachers import *
 from _11_Generations import *
 from _12_Students import *
-from _14_ClassStudents import *
-from _15_Attendances import *
+from _13_Parents import *
+from _14_StudentParents import *
+from _15_ClassStudents import *
+from _16_Attendances import *
 
 from datetime import datetime
 
@@ -103,14 +105,28 @@ dt2 = datetime.now()
 sec = math.ceil((dt2 - dt1).total_seconds())
 print('--------------> Students: ' + str(sec) + ' sec. ' + str(output))
 
-# _14_ClassStudents
+# _13_Parents
+dt1 = datetime.now()
+output = Parents.run()
+dt2 = datetime.now()
+sec = math.ceil((dt2 - dt1).total_seconds())
+print('--------------> Parents: ' + str(sec) + ' sec. ' + str(output))
+
+# _14_StudentParents
+dt1 = datetime.now()
+output = StudentParents.run()
+dt2 = datetime.now()
+sec = math.ceil((dt2 - dt1).total_seconds())
+print('--------------> StudentParents: ' + str(sec) + ' sec. ' + str(output))
+
+# _15_ClassStudents
 dt1 = datetime.now()
 output = ClassStudents.run()
 dt2 = datetime.now()
 sec = math.ceil((dt2 - dt1).total_seconds())
 print('--------------> ClassStudents: ' + str(sec) + ' sec. ' + str(output))
 
-# _15_Attendances
+# _16_Attendances
 dt1 = datetime.now()
 output = Attendances.run()
 dt2 = datetime.now()

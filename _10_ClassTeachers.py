@@ -42,7 +42,7 @@ class ClassTeachers:
             ClassID = row['ClassID']
             TeacherID = row['TeacherID']
 
-            sql_list.append('exec spClassTeachersInsert "' + ClassID + '", "' + TeacherID + '"')
+            sql_list.append('exec spClassTeachersInsert @ClassID="' + ClassID + '", @TeacherID="' + TeacherID + '"')
 
         Driver.executemany(sql_list)
 
