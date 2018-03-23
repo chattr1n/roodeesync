@@ -17,12 +17,12 @@ from _14_StudentParents import *
 from _15_ClassStudents import *
 from _16_Attendances import *
 from _17_Grades import *
+from _18_StudentGrades import *
 
 from datetime import datetime
 
 start_dt = datetime.now()
 
-'''
 #  _01_TaskListCat
 dt1 = datetime.now()
 output = TaskListCat.run()
@@ -134,7 +134,7 @@ output = Attendances.run()
 dt2 = datetime.now()
 sec = math.ceil((dt2 - dt1).total_seconds())
 print('--------------> Attendances: ' + str(sec) + ' sec. ' + str(output))
-'''
+
 # _17_Grades
 dt1 = datetime.now()
 output = Grades.run()
@@ -142,6 +142,12 @@ dt2 = datetime.now()
 sec = math.ceil((dt2 - dt1).total_seconds())
 print('--------------> Grades: ' + str(sec) + ' sec. ' + str(output))
 
+# _18_StudentGrades
+dt1 = datetime.now()
+output = StudentGrades.run()
+dt2 = datetime.now()
+sec = math.ceil((dt2 - dt1).total_seconds())
+print('--------------> Grades: ' + str(sec) + ' sec. ' + str(output))
 
 
 stop_dt = datetime.now()
