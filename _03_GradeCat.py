@@ -33,6 +33,9 @@ class GradeCat:
         
         key_column = 'ID'
 
+        if len(df1.columns) == 0:
+            df1 = pd.DataFrame(data=None, columns=df2.columns, index=df2.index)
+
         # insert and delete
         insert_df = df1[~df1[key_column].isin(df2[key_column])].copy()
         delete_df = df2[~df2[key_column].isin(df1[key_column])].copy()

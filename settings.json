@@ -1,6 +1,6 @@
 {
-    "MONGO_connectionstring": "mongodb://devuser:~Testing0001@aws-ap-southeast-1-portal.2.dblayer.com:15718,aws-ap-southeast-1-portal.0.dblayer.com:15718/roodee-dev?ssl=true",   
-    "MONGO_database":"roodee-dev",
+    "MONGO_connectionstring": "mongodb://devuser:~Testing0001@aws-ap-southeast-1-portal.2.dblayer.com:15718,aws-ap-southeast-1-portal.0.dblayer.com:15718/roodee-test?ssl=true",
+    "MONGO_database":"roodee-test",
     "MSSQL_Server": "roodee.database.windows.net",
     "MSSQL_User": "produser@roodee",
     "MSSQL_Pass": "~Proding0001",
