@@ -26,10 +26,15 @@ class Teachers:
             row_dict['Email'] = userProfile['email'] if 'email' in userProfile.keys() else ''
             row_dict['TeacherNo'] = userProfile['teacherNo'] if 'teacherNo' in userProfile.keys() else ''
 
-            userProfileTH = userProfile['th']
-            row_dict['NameTH'] = userProfileTH['name'] if 'name' in userProfileTH.keys() else ''
-            row_dict['MiddlenameTH'] = userProfileTH['middlename'] if 'middlename' in userProfileTH.keys() else ''
-            row_dict['SurNameTH'] = userProfileTH['surname'] if 'surname' in userProfileTH.keys() else ''
+            if 'th' in userProfile.keys():
+                userProfileTH = userProfile['th']
+                row_dict['NameTH'] = userProfileTH['name'] if 'name' in userProfileTH.keys() else ''
+                row_dict['MiddlenameTH'] = userProfileTH['middlename'] if 'middlename' in userProfileTH.keys() else ''
+                row_dict['SurNameTH'] = userProfileTH['surname'] if 'surname' in userProfileTH.keys() else ''
+            else:
+                row_dict['NameTH'] = ''
+                row_dict['MiddlenameTH'] = ''
+                row_dict['SurNameTH'] = ''
 
             row_list.append(row_dict)
 

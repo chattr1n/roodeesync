@@ -14,8 +14,9 @@ class StudentGrades:
         results = db['app-classes'].find({}, {'grades':1})
 
         for result in results:
+            ClassID = result['_id']
             for grade in result['grades']:
-                GradeID = grade['_id']
+                GradeID = grade['_id'] if '_id' in grade.keys() else grade['GradeID'] + ClassID
                 for record in grade['records']:
                     row_dict = {}
                     row_dict['GradeID'] = GradeID

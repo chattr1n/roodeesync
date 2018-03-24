@@ -147,8 +147,7 @@ dt1 = datetime.now()
 output = StudentGrades.run()
 dt2 = datetime.now()
 sec = math.ceil((dt2 - dt1).total_seconds())
-print('--------------> Grades: ' + str(sec) + ' sec. ' + str(output))
-
+print('--------------> StudentGrades: ' + str(sec) + ' sec. ' + str(output))
 
 stop_dt = datetime.now()
 sec = math.ceil((stop_dt - start_dt).total_seconds())

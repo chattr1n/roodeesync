@@ -19,7 +19,7 @@ class Grades:
             grades = result['grades']
             for grade in grades:
 
-                ID = grade['_id']
+                ID = grade['_id'] if '_id' in grade.keys() else grade['GradeID'] + ClassID
                 name = grade['name'] if 'name' in grade.keys() else ''
                 fullscore = str(grade['fullscore']) if 'fullscore' in grade.keys() else ''
                 assignDate = str(grade['assignDate'])[:19] if 'assignDate' in grade.keys() else ''
