@@ -1,8 +1,8 @@
 {
     "MONGO_connectionstring": "mongodb://devuser:~Testing0001@aws-ap-southeast-1-portal.2.dblayer.com:15718,aws-ap-southeast-1-portal.0.dblayer.com:15718/roodee-test?ssl=true",
     "MONGO_database":"roodee-test",
-    "MSSQL_Server": "roodee.database.windows.net",
-    "MSSQL_User": "produser@roodee",
+    "MSSQL_Server": "207.148.71.54",
+    "MSSQL_User": "produser",
     "MSSQL_Pass": "~Proding0001",
-    "MSSQL_DBName": "roodee-dev"
+    "MSSQL_DBName": "roodee_dev"
 }
