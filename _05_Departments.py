@@ -5,10 +5,10 @@ from datetime import datetime, timedelta
 class Departments:
     
     @staticmethod
-    def get_mongo():
+    def get_mongo(SchoolName):
         row_list = []
         
-        db = Driver.get_mongo()
+        db = Driver.get_mongo(SchoolName)
         results = db['app-department'].find({})
 
         for result in results:
@@ -23,9 +23,9 @@ class Departments:
         
     
     @staticmethod
-    def get_mssql():
+    def get_mssql(SchoolName):
         
-        return Driver.get_mssql('exec spDepartmentsGet')
+        return Driver.get_mssql(SchoolName, 'exec spDepartmentsGet')
     
     @staticmethod
     def diff(df1, df2):
@@ -59,7 +59,7 @@ class Departments:
     
     
     @staticmethod
-    def upsert(upsert_df, Method):
+    def upsert(SchoolName, upsert_df, Method):
 
         params = []
         for index, row in upsert_df.iterrows():
@@ -69,30 +69,30 @@ class Departments:
 
             params.append((ID, Name, NameTH))
                         
-        Driver.upsert_or_delete_mssql('spDepartments' + Method, params)
+        Driver.upsert_or_delete_mssql(SchoolName, 'spDepartments' + Method, params)
         
     
     @staticmethod
-    def delete(delete_df):
+    def delete(SchoolName, delete_df):
 
         params = []
         for index, row in delete_df.iterrows():
             ID = row['ID']
             params.append((ID,))
 
-        Driver.upsert_or_delete_mssql('spDepartmentsDelete', params)
+        Driver.upsert_or_delete_mssql(SchoolName, 'spDepartmentsDelete', params)
     
     @staticmethod
-    def run():
+    def run(SchoolName):
         pd.set_option('display.width', 1000)
         
-        df1 = Departments.get_mongo()
-        df2 = Departments.get_mssql()
+        df1 = Departments.get_mongo(SchoolName)
+        df2 = Departments.get_mssql(SchoolName)
         
         [insert_df, update_df, delete_df] = Departments.diff(df1, df2)
                     
-        Departments.upsert(insert_df, 'Insert')
-        Departments.upsert(update_df, 'Update')
-        Departments.delete(delete_df)
+        Departments.upsert(SchoolName, insert_df, 'Insert')
+        Departments.upsert(SchoolName, update_df, 'Update')
+        Departments.delete(SchoolName, delete_df)
 
         return [len(insert_df), len(update_df), len(delete_df)]

@@ -5,11 +5,11 @@ import datetime
 
 class Parents:
     @staticmethod
-    def get_mongo():
+    def get_mongo(SchoolName):
 
         row_list = []
 
-        db = Driver.get_mongo()
+        db = Driver.get_mongo(SchoolName)
         results = db['users'].find({"roles": "parent"})
 
         for result in results:
@@ -39,9 +39,9 @@ class Parents:
         return pd.DataFrame(row_list)
 
     @staticmethod
-    def get_mssql():
+    def get_mssql(SchoolName):
 
-        return Driver.get_mssql('exec spParentsGet')
+        return Driver.get_mssql(SchoolName, 'exec spParentsGet')
 
     @staticmethod
     def diff(df1, df2):
@@ -94,7 +94,7 @@ class Parents:
         return dt.to_pydatetime()
 
     @staticmethod
-    def upsert(upsert_df, Method):
+    def upsert(SchoolName, upsert_df, Method):
 
         sql_list = []
         for index, row in upsert_df.iterrows():
@@ -120,30 +120,30 @@ class Parents:
             sql += '@SurNameTH="' + SurNameTH + '"'
             sql_list.append(sql)
 
-        Driver.executemany(sql_list)
+        Driver.executemany(SchoolName, sql_list)
 
     @staticmethod
-    def delete(delete_df):
+    def delete(SchoolName, delete_df):
 
         params = []
         for index, row in delete_df.iterrows():
             ID = row['ID']
             params.append((ID,))
 
-        Driver.upsert_or_delete_mssql('spParentsDelete', params)
+        Driver.upsert_or_delete_mssql(SchoolName, 'spParentsDelete', params)
 
     @staticmethod
-    def run():
+    def run(SchoolName):
 
         pd.set_option('display.width', 1000)
 
-        df1 = Parents.get_mongo()
-        df2 = Parents.get_mssql()
+        df1 = Parents.get_mongo(SchoolName)
+        df2 = Parents.get_mssql(SchoolName)
 
         [insert_df, update_df, delete_df] = Parents.diff(df1, df2)
 
-        Parents.upsert(insert_df, 'Insert')
-        Parents.upsert(update_df, 'Update')
-        Parents.delete(delete_df)
+        Parents.upsert(SchoolName, insert_df, 'Insert')
+        Parents.upsert(SchoolName, update_df, 'Update')
+        Parents.delete(SchoolName, delete_df)
 
         return [len(insert_df), len(update_df), len(delete_df)]

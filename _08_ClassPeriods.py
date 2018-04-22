@@ -16,10 +16,10 @@ class ClassPeriods:
     '''
 
     @staticmethod
-    def get_mongo():
+    def get_mongo(SchoolName):
 
         row_list = []
-        db = Driver.get_mongo()
+        db = Driver.get_mongo(SchoolName)
         results = db['app-classes'].find({}, {"periods":1})
 
         for result in results:
@@ -36,9 +36,9 @@ class ClassPeriods:
         return pd.DataFrame(row_list)
 
     @staticmethod
-    def get_mssql():
+    def get_mssql(SchoolName):
 
-        return Driver.get_mssql('exec spClassPeriodsGet')
+        return Driver.get_mssql(SchoolName, 'exec spClassPeriodsGet')
 
     @staticmethod
     def diff(df1, df2):
@@ -55,7 +55,7 @@ class ClassPeriods:
         return [insert_df, delete_df]
 
     @staticmethod
-    def insert(insert_df):
+    def insert(SchoolName, insert_df):
         sql_list = []
         for index, row in insert_df.iterrows():
             ClassID = row['ClassID']
@@ -70,11 +70,11 @@ class ClassPeriods:
             sql += '@ClassEnd="' + ClassEnd + '"'
             sql_list.append(sql)
 
-        Driver.executemany(sql_list)
+        Driver.executemany(SchoolName, sql_list)
 
 
     @staticmethod
-    def delete(delete_df):
+    def delete(SchoolName, delete_df):
         sql_list = []
         for index, row in delete_df.iterrows():
             ID = row['ID']
@@ -83,19 +83,19 @@ class ClassPeriods:
             sql += '@ID=' + str(ID) + ''
             sql_list.append(sql)
 
-        Driver.executemany(sql_list)
+        Driver.executemany(SchoolName, sql_list)
 
     @staticmethod
-    def run():
+    def run(SchoolName):
 
         pd.set_option('display.width', 1000)
 
-        df1 = ClassPeriods.get_mongo()
-        df2 = ClassPeriods.get_mssql()
+        df1 = ClassPeriods.get_mongo(SchoolName)
+        df2 = ClassPeriods.get_mssql(SchoolName)
 
         [insert_df, delete_df] = ClassPeriods.diff(df1, df2)
 
-        ClassPeriods.insert(insert_df)
-        ClassPeriods.delete(delete_df)
+        ClassPeriods.insert(SchoolName, insert_df)
+        ClassPeriods.delete(SchoolName, delete_df)
 
         return [len(insert_df), -1, len(delete_df)]

@@ -14,20 +14,20 @@ class Driver:
         return json.loads(content)
         
     @staticmethod
-    def get_mongo():
+    def get_mongo(SchoolName):
 
         settings = Driver.load_settings()
-        client = MongoClient(settings['MONGO_connectionstring'], ssl_cert_reqs=ssl.CERT_NONE)
-        return client[settings['MONGO_database']]
+        client = MongoClient(settings[SchoolName + '_MONGO_connectionstring'], ssl_cert_reqs=ssl.CERT_NONE)
+        return client[settings[SchoolName + '_MONGO_database']]
         
     @staticmethod
-    def get_mssql(sql):
+    def get_mssql(SchoolName, sql):
 
         settings = Driver.load_settings()
-        server = settings['MSSQL_Server']
-        username = settings['MSSQL_User']
-        password = settings['MSSQL_Pass']
-        dbname = settings['MSSQL_DBName']
+        server = settings[SchoolName + '_MSSQL_Server']
+        username = settings[SchoolName + '_MSSQL_User']
+        password = settings[SchoolName + '_MSSQL_Pass']
+        dbname = settings[SchoolName + '_MSSQL_DBName']
 
         conn = pymssql.connect(server=server, user=username, password=password, database=dbname)
          
@@ -37,12 +37,12 @@ class Driver:
             conn.close()
             
     @staticmethod
-    def upsert_or_delete_mssql(proc, params):
+    def upsert_or_delete_mssql(SchoolName, proc, params):
         settings = Driver.load_settings()
-        server = settings['MSSQL_Server']
-        username = settings['MSSQL_User']
-        password = settings['MSSQL_Pass']
-        dbname = settings['MSSQL_DBName']
+        server = settings[SchoolName + '_MSSQL_Server']
+        username = settings[SchoolName + '_MSSQL_User']
+        password = settings[SchoolName + '_MSSQL_Pass']
+        dbname = settings[SchoolName + '_MSSQL_DBName']
 
         with pymssql.connect(server, username, password, dbname) as conn:
             with conn.cursor(as_dict=True) as cursor:
@@ -55,13 +55,13 @@ class Driver:
                 conn.commit()
 
     @staticmethod
-    def executemany(sql_list):
+    def executemany(SchoolName, sql_list):
 
         settings = Driver.load_settings()
-        server = settings['MSSQL_Server']
-        username = settings['MSSQL_User']
-        password = settings['MSSQL_Pass']
-        dbname = settings['MSSQL_DBName']
+        server = settings[SchoolName + '_MSSQL_Server']
+        username = settings[SchoolName + '_MSSQL_User']
+        password = settings[SchoolName + '_MSSQL_Pass']
+        dbname = settings[SchoolName + '_MSSQL_DBName']
 
         with pymssql.connect(server, username, password, dbname) as conn:
             with conn.cursor(as_dict=True) as cursor:

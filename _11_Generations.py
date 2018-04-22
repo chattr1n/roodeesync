@@ -5,11 +5,11 @@ from datetime import datetime, timedelta
 class Generations:
     
     @staticmethod
-    def get_mongo():
+    def get_mongo(SchoolName):
         
         row_list = []
         
-        db = Driver.get_mongo()
+        db = Driver.get_mongo(SchoolName)
         results = db['app-generation'].find({})
 
         for result in results:
@@ -23,9 +23,9 @@ class Generations:
         
     
     @staticmethod
-    def get_mssql():
+    def get_mssql(SchoolName):
         
-        return Driver.get_mssql('exec spGenerationsGet')
+        return Driver.get_mssql(SchoolName, 'exec spGenerationsGet')
     
     @staticmethod
     def diff(df1, df2):
@@ -60,7 +60,7 @@ class Generations:
     
     
     @staticmethod
-    def upsert(upsert_df, Method):
+    def upsert(SchoolName, upsert_df, Method):
 
         params  =[]
         for index, row in upsert_df.iterrows():
@@ -70,31 +70,31 @@ class Generations:
 
             params.append((ID, Name, NameTH))
             
-        Driver.upsert_or_delete_mssql('spGenerations' + Method, params)
+        Driver.upsert_or_delete_mssql(SchoolName, 'spGenerations' + Method, params)
         
     
     @staticmethod
-    def delete(delete_df):
+    def delete(SchoolName, delete_df):
 
         params = []
         for index, row in delete_df.iterrows():
             ID = row['ID']
             params.append((ID,))
 
-        Driver.upsert_or_delete_mssql('spGenerationsDelete', params)
+        Driver.upsert_or_delete_mssql(SchoolName, 'spGenerationsDelete', params)
     
     @staticmethod
-    def run():
+    def run(SchoolName):
         
         pd.set_option('display.width', 1000)
         
-        df1 = Generations.get_mongo()
-        df2 = Generations.get_mssql()
+        df1 = Generations.get_mongo(SchoolName)
+        df2 = Generations.get_mssql(SchoolName)
         
         [insert_df, update_df, delete_df] = Generations.diff(df1, df2)
                     
-        Generations.upsert(insert_df, 'Insert')
-        Generations.upsert(update_df, 'Update')
-        Generations.delete(delete_df)
+        Generations.upsert(SchoolName, insert_df, 'Insert')
+        Generations.upsert(SchoolName, update_df, 'Update')
+        Generations.delete(SchoolName, delete_df)
 
         return [len(insert_df), len(update_df), len(delete_df)]

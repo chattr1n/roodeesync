@@ -6,11 +6,11 @@ import datetime
 
 class Teachers:
     @staticmethod
-    def get_mongo():
+    def get_mongo(SchoolName):
 
         row_list = []
 
-        db = Driver.get_mongo()
+        db = Driver.get_mongo(SchoolName)
         results = db['users'].find({"roles": "teacher"})
 
         for result in results:
@@ -41,9 +41,9 @@ class Teachers:
         return pd.DataFrame(row_list)
 
     @staticmethod
-    def get_mssql():
+    def get_mssql(SchoolName):
 
-        return Driver.get_mssql('exec spTeachersGet')
+        return Driver.get_mssql(SchoolName, 'exec spTeachersGet')
 
     @staticmethod
     def diff(df1, df2):
@@ -97,7 +97,7 @@ class Teachers:
         return dt.to_pydatetime()
 
     @staticmethod
-    def upsert(upsert_df, Method):
+    def upsert(SchoolName, upsert_df, Method):
 
         sql_list = []
         for index, row in upsert_df.iterrows():
@@ -125,31 +125,31 @@ class Teachers:
             sql += '@TeacherNo="' + TeacherNo + '"'
             sql_list.append(sql)
 
-        Driver.executemany(sql_list)
+        Driver.executemany(SchoolName, sql_list)
 
 
     @staticmethod
-    def delete(delete_df):
+    def delete(SchoolName, delete_df):
 
         params = []
         for index, row in delete_df.iterrows():
             ID = row['ID']
             params.append((ID,))
 
-        Driver.upsert_or_delete_mssql('spTeachersDelete', params)
+        Driver.upsert_or_delete_mssql(SchoolName, 'spTeachersDelete', params)
 
     @staticmethod
-    def run():
+    def run(SchoolName):
 
         pd.set_option('display.width', 1000)
 
-        df1 = Teachers.get_mongo()
-        df2 = Teachers.get_mssql()
+        df1 = Teachers.get_mongo(SchoolName)
+        df2 = Teachers.get_mssql(SchoolName)
 
         [insert_df, update_df, delete_df] = Teachers.diff(df1, df2)
 
-        Teachers.upsert(insert_df, 'Insert')
-        Teachers.upsert(update_df, 'Update')
-        Teachers.delete(delete_df)
+        Teachers.upsert(SchoolName, insert_df, 'Insert')
+        Teachers.upsert(SchoolName, update_df, 'Update')
+        Teachers.delete(SchoolName, delete_df)
 
         return [len(insert_df), len(update_df), len(delete_df)]

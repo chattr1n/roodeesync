@@ -5,11 +5,11 @@ from datetime import datetime, timedelta
 class TaskListCat:
     
     @staticmethod
-    def get_mongo():
+    def get_mongo(SchoolName):
         
         row_list = []
         
-        db = Driver.get_mongo()
+        db = Driver.get_mongo(SchoolName)
         results = db['app-tasklistcat'].find({})
 
         for result in results:
@@ -24,9 +24,9 @@ class TaskListCat:
         
     
     @staticmethod
-    def get_mssql():
+    def get_mssql(SchoolName):
         
-        return Driver.get_mssql('exec spTaskListCatGet')
+        return Driver.get_mssql(SchoolName, 'exec spTaskListCatGet')
     
     @staticmethod
     def diff(df1, df2):
@@ -65,7 +65,7 @@ class TaskListCat:
     
     
     @staticmethod
-    def upsert(upsert_df, Method):
+    def upsert(SchoolName, upsert_df, Method):
         params = []
         for index, row in upsert_df.iterrows():
             ID = row['ID']
@@ -75,30 +75,30 @@ class TaskListCat:
 
             params.append((ID, Name, NameTH, Color))
 
-        Driver.upsert_or_delete_mssql('spTaskListCat' + Method, params)
+        Driver.upsert_or_delete_mssql(SchoolName, 'spTaskListCat' + Method, params)
         
     
     @staticmethod
-    def delete(delete_df):
+    def delete(SchoolName, delete_df):
         params = []
         for index, row in delete_df.iterrows():
             ID = row['ID']
             params.append((ID,))
                         
-        Driver.upsert_or_delete_mssql('spTaskListCatDelete', params)
+        Driver.upsert_or_delete_mssql(SchoolName, 'spTaskListCatDelete', params)
     
     @staticmethod
-    def run():
+    def run(SchoolName):
         
         pd.set_option('display.width', 1000)
         
-        df1 = TaskListCat.get_mongo()
-        df2 = TaskListCat.get_mssql()
+        df1 = TaskListCat.get_mongo(SchoolName)
+        df2 = TaskListCat.get_mssql(SchoolName)
         
         [insert_df, update_df, delete_df] = TaskListCat.diff(df1, df2)
                     
-        TaskListCat.upsert(insert_df, 'Insert')
-        TaskListCat.upsert(update_df, 'Update')
-        TaskListCat.delete(delete_df)
+        TaskListCat.upsert(SchoolName, insert_df, 'Insert')
+        TaskListCat.upsert(SchoolName, update_df, 'Update')
+        TaskListCat.delete(SchoolName, delete_df)
 
         return [len(insert_df), len(update_df), len(delete_df)]

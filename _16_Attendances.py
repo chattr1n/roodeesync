@@ -16,10 +16,10 @@ class Attendances:
     '''
 
     @staticmethod
-    def get_mongo():
+    def get_mongo(SchoolName):
 
         row_list = []
-        db = Driver.get_mongo()
+        db = Driver.get_mongo(SchoolName)
         results = db['app-classes'].find({}, {"attendances":1})
 
         for result in results:
@@ -41,9 +41,9 @@ class Attendances:
         return pd.DataFrame(row_list)
 
     @staticmethod
-    def get_mssql():
+    def get_mssql(SchoolName):
 
-        return Driver.get_mssql('exec spAttendancesGet')
+        return Driver.get_mssql(SchoolName, 'exec spAttendancesGet')
 
     @staticmethod
     def diff(df1, df2):
@@ -79,7 +79,7 @@ class Attendances:
         return [insert_df, update_df, delete_df]
 
     @staticmethod
-    def upsert(upsert_df, method):
+    def upsert(SchoolName, upsert_df, method):
         sql_list = []
         for index, row in upsert_df.iterrows():
             ClassID = row['ClassID']
@@ -94,33 +94,33 @@ class Attendances:
             sql += '@Status=' + str(Status)
             sql_list.append(sql)
 
-        Driver.executemany(sql_list)
+        Driver.executemany(SchoolName, sql_list)
 
 
     @staticmethod
-    def delete(delete_df):
+    def delete(SchoolName, delete_df):
         params = []
         for index, row in delete_df.iterrows():
             ID = row['ID']
             params.append((ID,))
 
-        Driver.upsert_or_delete_mssql('spAttendancesDelete', params)
+        Driver.upsert_or_delete_mssql(SchoolName, 'spAttendancesDelete', params)
 
     @staticmethod
-    def run():
+    def run(SchoolName):
 
         pd.set_option('display.width', 1000)
 
-        df1 = Attendances.get_mongo()
-        df2 = Attendances.get_mssql()
+        df1 = Attendances.get_mongo(SchoolName)
+        df2 = Attendances.get_mssql(SchoolName)
 
         df1['ID'] = df1['ClassID'] + '|' + df1['StudentID'] + '|' + df1['PeriodDT'].astype(str)
         df2['ID'] = df2['ClassID'] + '|' + df2['StudentID'] + '|' + df2['PeriodDT'].astype(str)
 
         [insert_df, update_df, delete_df] = Attendances.diff(df1, df2)
 
-        Attendances.upsert(insert_df, 'Insert')
-        Attendances.upsert(update_df, 'Update')
-        Attendances.delete(delete_df)
+        Attendances.upsert(SchoolName, insert_df, 'Insert')
+        Attendances.upsert(SchoolName, update_df, 'Update')
+        Attendances.delete(SchoolName, delete_df)
 
         return [len(insert_df), len(update_df), len(delete_df)]

@@ -4,11 +4,11 @@ import pandas as pd
 
 class Subjects:
     @staticmethod
-    def get_mongo():
+    def get_mongo(SchoolName):
 
         row_list = []
 
-        db = Driver.get_mongo()
+        db = Driver.get_mongo(SchoolName)
         results = db['app-subject'].find({})
 
         for result in results:
@@ -23,9 +23,9 @@ class Subjects:
         return pd.DataFrame(row_list)
 
     @staticmethod
-    def get_mssql():
+    def get_mssql(SchoolName):
 
-        return Driver.get_mssql('exec spSubjectsGet')
+        return Driver.get_mssql(SchoolName, 'exec spSubjectsGet')
 
     @staticmethod
     def diff(df1, df2):
@@ -61,7 +61,7 @@ class Subjects:
         return [insert_df, update_df, delete_df]
 
     @staticmethod
-    def upsert(upsert_df, Method):
+    def upsert(SchoolName, upsert_df, Method):
 
         sql_list = []
         for index, row in upsert_df.iterrows():
@@ -79,30 +79,30 @@ class Subjects:
             sql += '@DepartmentID="' + DepartmentID + '"'
             sql_list.append(sql)
 
-        Driver.executemany(sql_list)
+        Driver.executemany(SchoolName, sql_list)
 
     @staticmethod
-    def delete(delete_df):
+    def delete(SchoolName, delete_df):
 
         params = []
         for index, row in delete_df.iterrows():
             ID = row['ID']
             params.append((ID,))
 
-        Driver.upsert_or_delete_mssql('spSubjectsDelete', params)
+        Driver.upsert_or_delete_mssql(SchoolName, 'spSubjectsDelete', params)
 
     @staticmethod
-    def run():
+    def run(SchoolName):
 
         pd.set_option('display.width', 1000)
 
-        df1 = Subjects.get_mongo()
-        df2 = Subjects.get_mssql()
+        df1 = Subjects.get_mongo(SchoolName)
+        df2 = Subjects.get_mssql(SchoolName)
 
         [insert_df, update_df, delete_df] = Subjects.diff(df1, df2)
 
-        Subjects.upsert(insert_df, 'Insert')
-        Subjects.upsert(update_df, 'Update')
-        Subjects.delete(delete_df)
+        Subjects.upsert(SchoolName, insert_df, 'Insert')
+        Subjects.upsert(SchoolName, update_df, 'Update')
+        Subjects.delete(SchoolName, delete_df)
 
         return [len(insert_df), len(update_df), len(delete_df)]

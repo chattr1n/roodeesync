@@ -5,11 +5,11 @@ from datetime import datetime, timedelta
 class SchoolYears:
     
     @staticmethod
-    def get_mongo():
+    def get_mongo(SchoolName):
         
         row_list = []
         
-        db = Driver.get_mongo()
+        db = Driver.get_mongo(SchoolName)
         results = db['app-schoolyear'].find({})
 
         for result in results:
@@ -25,9 +25,9 @@ class SchoolYears:
         
     
     @staticmethod
-    def get_mssql():
+    def get_mssql(SchoolName):
         
-        return Driver.get_mssql('exec spSchoolYearsGet')
+        return Driver.get_mssql(SchoolName, 'exec spSchoolYearsGet')
     
     @staticmethod
     def diff(df1, df2):
@@ -64,7 +64,7 @@ class SchoolYears:
     
     
     @staticmethod
-    def upsert(upsert_df, Method):
+    def upsert(SchoolName, upsert_df, Method):
 
         params = []
         for index, row in upsert_df.iterrows():
@@ -76,31 +76,31 @@ class SchoolYears:
 
             params.append((ID, Name, NameTH, BeginDate, EndDate))
                         
-        Driver.upsert_or_delete_mssql('spSchoolYears' + Method, params)
+        Driver.upsert_or_delete_mssql(SchoolName, 'spSchoolYears' + Method, params)
         
     
     @staticmethod
-    def delete(delete_df):
+    def delete(SchoolName, delete_df):
 
         params = []
         for index, row in delete_df.iterrows():
             ID = row['ID']
             params.append((ID,))
 
-        Driver.upsert_or_delete_mssql('spSchoolYearsDelete', params)
+        Driver.upsert_or_delete_mssql(SchoolName, 'spSchoolYearsDelete', params)
     
     @staticmethod
-    def run():
+    def run(SchoolName):
         
         pd.set_option('display.width', 1000)
         
-        df1 = SchoolYears.get_mongo()
-        df2 = SchoolYears.get_mssql()
+        df1 = SchoolYears.get_mongo(SchoolName)
+        df2 = SchoolYears.get_mssql(SchoolName)
         
         [insert_df, update_df, delete_df] = SchoolYears.diff(df1, df2)
                     
-        SchoolYears.upsert(insert_df, 'Insert')
-        SchoolYears.upsert(update_df, 'Update')
-        SchoolYears.delete(delete_df)
+        SchoolYears.upsert(SchoolName, insert_df, 'Insert')
+        SchoolYears.upsert(SchoolName, update_df, 'Update')
+        SchoolYears.delete(SchoolName, delete_df)
 
         return [len(insert_df), len(update_df), len(delete_df)]

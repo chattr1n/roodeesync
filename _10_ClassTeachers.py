@@ -6,9 +6,9 @@ from datetime import datetime, timedelta
 class ClassTeachers:
 
     @staticmethod
-    def get_mongo():
+    def get_mongo(SchoolName):
         row_list = []
-        db = Driver.get_mongo()
+        db = Driver.get_mongo(SchoolName)
         results = db['app-classes'].find({},{'id': 1, 'teachers':1})
         for result in results:
             row_dict = {}
@@ -20,8 +20,8 @@ class ClassTeachers:
         return pd.DataFrame(row_list)
 
     @staticmethod
-    def get_mssql():
-        return Driver.get_mssql('exec spClassTeachersGet')
+    def get_mssql(SchoolName):
+        return Driver.get_mssql(SchoolName, 'exec spClassTeachersGet')
 
     @staticmethod
     def diff(df1, df2):
@@ -35,7 +35,7 @@ class ClassTeachers:
         return [insert_df, delete_df]
 
     @staticmethod
-    def Insert(upsert_df):
+    def Insert(SchoolName, upsert_df):
 
         sql_list = []
         for index, row in upsert_df.iterrows():
@@ -44,10 +44,10 @@ class ClassTeachers:
 
             sql_list.append('exec spClassTeachersInsert @ClassID="' + ClassID + '", @TeacherID="' + TeacherID + '"')
 
-        Driver.executemany(sql_list)
+        Driver.executemany(SchoolName, sql_list)
 
     @staticmethod
-    def delete(delete_df):
+    def delete(SchoolName, delete_df):
 
         sql_list = []
         for index, row in delete_df.iterrows():
@@ -56,22 +56,22 @@ class ClassTeachers:
 
             sql_list.append('exec spClassTeachersDelete @ClassID="' + ClassID + '", @TeacherID="' + TeacherID + '"')
 
-        Driver.executemany(sql_list)
+        Driver.executemany(SchoolName, sql_list)
 
     @staticmethod
-    def run():
+    def run(SchoolName):
 
         pd.set_option('display.width', 1000)
 
-        df1 = ClassTeachers.get_mongo()
-        df2 = ClassTeachers.get_mssql()
+        df1 = ClassTeachers.get_mongo(SchoolName)
+        df2 = ClassTeachers.get_mssql(SchoolName)
 
         df1['ID'] = df1['ClassID'] + '|' + df1['TeacherID']
         df2['ID'] = df2['ClassID'] + '|' + df2['TeacherID']
 
         [insert_df, delete_df] = ClassTeachers.diff(df1, df2)
 
-        ClassTeachers.Insert(insert_df)
-        ClassTeachers.delete(delete_df)
+        ClassTeachers.Insert(SchoolName, insert_df)
+        ClassTeachers.delete(SchoolName, delete_df)
 
         return [len(insert_df), -1, len(delete_df)]
