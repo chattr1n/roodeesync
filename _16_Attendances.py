@@ -101,8 +101,9 @@ class Attendances:
     def delete(SchoolName, delete_df):
         params = []
         for index, row in delete_df.iterrows():
-            ID = row['ID']
-            params.append((ID,))
+            ClassID = row['ClassID']
+            StudentID = row['StudentID']
+            params.append((ClassID,StudentID))
 
         Driver.upsert_or_delete_mssql(SchoolName, 'spAttendancesDelete', params)
 
