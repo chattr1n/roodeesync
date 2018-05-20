@@ -52,8 +52,8 @@ class StudentParents:
 
         sql_list = []
         for index, row in delete_df.iterrows():
-            StudentID = row['ClassID']
-            ParentID = row['TeacherID']
+            StudentID = row['StudentID']
+            ParentID = row['ParentID']
 
             sql_list.append('exec spStudentParentsDelete @StudentID="' + StudentID + '", @ParentID="' + ParentID + '"')
 
