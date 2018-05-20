@@ -97,6 +97,9 @@ class StudentGrades:
         df1 = StudentGrades.get_mongo(SchoolName)
         df2 = StudentGrades.get_mssql(SchoolName)
 
+        if len(df1.columns) == 0:
+            df1 = pd.DataFrame(data=None, columns=df2.columns, index=df2.index)
+
         df1['ID'] = df1['StudentID'] + '|' + df1['GradeID']
         df2['ID'] = df2['StudentID'] + '|' + df2['GradeID']
 

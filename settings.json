@@ -8,7 +8,7 @@
 
     "roodee-test_MONGO_connectionstring": "mongodb://devuser:~Testing0001@aws-ap-southeast-1-portal.2.dblayer.com:15718,aws-ap-southeast-1-portal.0.dblayer.com:15718/roodee-test?ssl=true",
     "roodee-test_MONGO_database":"roodee-test",
-    "roodee-test_MSSQL_Server": "127.0.0.1",
+    "roodee-test_MSSQL_Server": "roodee-data.com",
     "roodee-test_MSSQL_User": "produser",
     "roodee-test_MSSQL_Pass": "~Proding0001",
     "roodee-test_MSSQL_DBName": "roodee-test"
