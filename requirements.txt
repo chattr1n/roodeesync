@@ -2,3 +2,5 @@ flask
 pymongo
 pymssql
 pandas
+gevent
+gunicorn

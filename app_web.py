@@ -23,6 +23,8 @@ from _18_StudentGrades import *
 
 from datetime import datetime
 
+from gevent.pywsgi import WSGIServer
+
 app = Flask(__name__)
 
 @app.route('/<SchoolName>')
@@ -167,4 +169,6 @@ def index(SchoolName):
     return return_str
 
 if __name__ == "__main__":    
-    app.run(host='0.0.0.0', port=8081, debug=False)
+    # app.run(host='0.0.0.0', port=8081, debug=False)
+    http_server = WSGIServer(('', 8081), app)
+    http_server.serve_forever()  
