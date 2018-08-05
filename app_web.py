@@ -164,7 +164,7 @@ def index(SchoolName):
     sec = math.ceil((dt2 - dt1).total_seconds())
     return_str += '--------------> StudentGrades: ' + str(sec) + ' sec. ' + str(output) + '\r\n'
 
-    # _19_StudentGrades
+    # _19_Leaves
     dt1 = datetime.now()
     output = Leaves.run(SchoolName)
     dt2 = datetime.now()
@@ -178,6 +178,6 @@ def index(SchoolName):
     return return_str
 
 if __name__ == "__main__":    
-    #app.run(host='0.0.0.0', port=8081, debug=False)
-    http_server = WSGIServer(('', 8081), app)
-    http_server.serve_forever()
+    app.run(host='0.0.0.0', port=8081, debug=True)
+    # http_server = WSGIServer(('', 8081), app)
+    # http_server.serve_forever()

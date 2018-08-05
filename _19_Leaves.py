@@ -14,28 +14,30 @@ class Leaves:
         results = db['app-schoolyear'].find({}, {'leaves':1})
 
         for result in results:
-            for semester in result['leaves']:
-                for period in semester['periodArray']:
-                    row_dict = {}
-                    row_dict['SemesterID'] = period['semesterID']
-                    row_dict['StudentID'] = period['studentID']
-                    row_dict['ClassID'] = period['classID']
-                    row_dict['PeriodDate'] = period['periodDate']
-                    row_dict['Reason'] = period['reason']
+            if 'leaves' in result.keys():
+                for semester in result['leaves']:
+                    for period in semester['periodArray']:
+                        row_dict = {}
+                        row_dict['SemesterID'] = period['semesterID']
+                        row_dict['StudentID'] = period['studentID']
+                        row_dict['ClassID'] = period['classID']
+                        row_dict['PeriodDate'] = period['periodDate']
+                        row_dict['Reason'] = period['reason']
 
-                    this_type = type(period['type'])
+                        this_type = type(period['type'])
 
-                    if this_type.__name__ == 'dict':
-                        row_dict['TypeValue'] = period['type']['value']
-                        row_dict['TypeLabel'] = period['type']['label']
-                    else:
-                        row_dict['TypeValue'] = period['type']
-                        row_dict['TypeLabel'] = period['type']
+                        if this_type.__name__ == 'dict':
+                            row_dict['TypeValue'] = period['type']['value']
+                            row_dict['TypeLabel'] = period['type']['label']
+                        else:
+                            row_dict['TypeValue'] = period['type']
+                            row_dict['TypeLabel'] = period['type']
 
-                    row_dict['ByID'] = period['byID']
-                    row_dict['EntryDate'] = period['entryDate']
-                    row_list.append(row_dict)
-
+                        row_dict['ByID'] = period['byID']
+                        row_dict['EntryDate'] = period['entryDate']
+                        row_list.append(row_dict)
+            else:
+                return None
         return pd.DataFrame(row_list)
 
     @staticmethod
@@ -110,6 +112,10 @@ class Leaves:
         pd.set_option('display.width', 1000)
 
         df1 = Leaves.get_mongo(SchoolName)
+
+        if df1 is None:
+            return [-1,-1,-1]
+
         df2 = Leaves.get_mssql(SchoolName)
 
         df1['ID'] = df1['SemesterID'] + '|' + df1['StudentID'] + '|' + df1['ClassID'] + '|' + df1['PeriodDate'].dt.strftime('%Y%m%d%H%M%S')
