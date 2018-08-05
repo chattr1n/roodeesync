@@ -20,6 +20,7 @@ from _15_ClassStudents import *
 from _16_Attendances import *
 from _17_Grades import *
 from _18_StudentGrades import *
+from _19_Leaves import *
 
 from datetime import datetime
 
@@ -36,6 +37,7 @@ def index(SchoolName):
     start_dt = datetime.now()
     return_str = ''
 
+    '''
     #  _01_TaskListCat
     dt1 = datetime.now()
     output = TaskListCat.run(SchoolName)
@@ -161,6 +163,13 @@ def index(SchoolName):
     dt2 = datetime.now()
     sec = math.ceil((dt2 - dt1).total_seconds())
     return_str += '--------------> StudentGrades: ' + str(sec) + ' sec. ' + str(output) + '\r\n'
+    '''
+    # _19_StudentGrades
+    dt1 = datetime.now()
+    output = Leaves.run(SchoolName)
+    dt2 = datetime.now()
+    sec = math.ceil((dt2 - dt1).total_seconds())
+    return_str += '--------------> Leaves: ' + str(sec) + ' sec. ' + str(output) + '\r\n'
     
     stop_dt = datetime.now()
     sec = math.ceil((stop_dt - start_dt).total_seconds())
@@ -169,6 +178,6 @@ def index(SchoolName):
     return return_str
 
 if __name__ == "__main__":    
-    # app.run(host='0.0.0.0', port=8081, debug=False)
-    http_server = WSGIServer(('', 8081), app)
-    http_server.serve_forever()  
+    app.run(host='0.0.0.0', port=8081, debug=False)
+    # http_server = WSGIServer(('', 8081), app)
+    # http_server.serve_forever()
